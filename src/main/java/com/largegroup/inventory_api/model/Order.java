@@ -19,12 +19,16 @@ public class Order {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
+
+    private Integer userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
+
+    private Integer productId;
 
     private Integer quantity;
 

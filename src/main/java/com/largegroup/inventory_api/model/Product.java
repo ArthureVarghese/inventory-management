@@ -23,6 +23,8 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Category category;
 
+    private Integer categoryId;
+
     private Double price;
     
     private Integer quantity;
