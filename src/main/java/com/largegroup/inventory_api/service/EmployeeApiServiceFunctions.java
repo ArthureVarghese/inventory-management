@@ -1,10 +1,11 @@
 package com.largegroup.inventory_api.service;
 
 import com.largegroup.inventory_api.view.GenericResponse;
+import com.largegroup.inventory_api.view.ProductDto;
 
 public interface EmployeeApiServiceFunctions {
 
-    public GenericResponse addProductToInventory();
+    public GenericResponse addProductToInventory(ProductDto productDto);
 
     public GenericResponse getProductFromInventory();
 
