@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GenericResponse {
-    String message;
+public class CategoryDto {
+    String id;
+    String name;
 }
