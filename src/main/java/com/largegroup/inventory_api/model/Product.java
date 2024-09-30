@@ -1,5 +1,6 @@
 package com.largegroup.inventory_api.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Category category;
 
+    @Column(name="category_id")
     private Integer categoryId;
 
     private Double price;
