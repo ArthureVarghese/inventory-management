@@ -1,5 +1,9 @@
 package com.largegroup.inventory_api.controller;
 
+import com.largegroup.inventory_api.service.EmployeeApiServiceFunctions;
+import com.largegroup.inventory_api.view.GenericResponse;
+import com.largegroup.inventory_api.view.ProductDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping (path = "/api/v1", produces = "application/json")
 public class EmployeeApiController {
 
+    @Autowired
+    EmployeeApiServiceFunctions employeeApiService;
+
     @PostMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
-    public void addProduct() {
+    @ResponseBody
+    public GenericResponse addProduct(@RequestBody ProductDto productDto) {
+        return employeeApiService.addProductToInventory(productDto);
     }
 
     @GetMapping (path = "/product", produces = "application/json")
