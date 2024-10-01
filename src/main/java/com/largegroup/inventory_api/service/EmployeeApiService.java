@@ -144,7 +144,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
 
         //TODO: Need to add a db check also
         Integer categoryId;
-
         try {
             categoryId = productDto.getCategoryId();
         } catch (Exception ex) {
@@ -155,18 +154,13 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         if (categoryId != null) {
             if (categoryId < 1)
                 errors.add("Category ID should be greater than 0");
-
-            if (!categoryRepository.existsById(categoryId))
-                errors.add("Invalid Category ID Provided");
-
-            if (productRepository.existsByNameAndCategoryId(productDto.getName(),categoryId))
-                errors.add("Product Already Exists With Given name and Category ID");
         }
+
         Double price;
         try {
             price = productDto.getPrice();
         } catch (Exception ex) {
-            errors.add("Invalid Price provided");
+
             price = null;
         }
 
@@ -174,13 +168,15 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
             if (price <= 0)
                 errors.add("Price should be greater than 0");
         }
+        else {
+            errors.add("Invalid Price provided");
+        }
 
         Integer quantity;
 
         try {
             quantity = productDto.getQuantity();
         } catch (Exception ex) {
-            errors.add("Invalid Quantity provided");
             quantity = null;
         }
 
@@ -188,7 +184,22 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
             if (quantity < 0)
                 errors.add("Quantity should be greater than 0");
         }
+        else {
+            errors.add("Invalid Quantity provided");
+        }
 
+        if(!errors.isEmpty())
+            return errors;
+
+        if(categoryId!=null){
+            if (!categoryRepository.existsById(categoryId)){
+                errors.add("Invalid Category ID Provided");
+                return errors;
+            }
+
+            if (productRepository.existsByNameAndCategoryId(productDto.getName(),categoryId))
+                errors.add("Product Already Exists With Given name and Category ID");
+        }
         return errors;
     }
 
