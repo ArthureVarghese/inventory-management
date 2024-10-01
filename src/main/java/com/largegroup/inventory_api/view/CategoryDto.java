@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CategoryDto {
-    String id;
+    Integer id;
     String name;
 }

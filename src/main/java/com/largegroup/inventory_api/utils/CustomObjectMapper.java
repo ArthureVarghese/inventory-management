@@ -10,26 +10,26 @@ public class CustomObjectMapper {
     public static ProductDto mapProductToDto(Product product){
 
         return new ProductDto(
-                String.valueOf(product.getId()),
-                String.valueOf(product.getName()),
-                String.valueOf(product.getCategoryId()),
-                String.valueOf(product.getPrice()),
-                String.valueOf(product.getQuantity())
+                product.getId(),
+                product.getName(),
+                product.getCategoryId(),
+                product.getPrice(),
+                product.getQuantity()
         );
     }
 
     public static Product mapDtoToProduct(ProductDto productDto){
         Product product = new Product();
         product.setName(productDto.getName());
-        product.setCategoryId(Integer.parseInt(productDto.getCategoryId()));
-        product.setPrice(Double.parseDouble(productDto.getPrice()));
-        product.setQuantity(Integer.parseInt(productDto.getQuantity()));
+        product.setCategoryId(productDto.getCategoryId());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
         return product;
     }
 
     public static CategoryDto mapCategoryToDto(Category category){
         return new CategoryDto(
-                String.valueOf(category.getId()),
+                category.getId(),
                 category.getName()
         );
     }
