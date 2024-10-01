@@ -10,7 +10,7 @@ public interface EmployeeApiServiceFunctions {
 
     public GenericResponse updateProductInInventory();
 
-    public GenericResponse deleteProductFromInventory();
+    public void deleteProductFromInventory(Integer productId, Integer userId);
 
     public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId);
 
