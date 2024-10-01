@@ -81,8 +81,15 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     }
 
     @Override
-    public GenericResponse deleteProductFromInventory() {
-        return null;
+    public void deleteProductFromInventory(Integer productId, Integer userId) {
+
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId,DEFAULT_ACCESS_ROLE);
+
+        if(!userRepository.existsById(userId))
+            throw new ValidationError("Unknown User ID",List.of("No User with such id present"));
+
+        productRepository.deleteById(productId);
     }
 
     @Override
