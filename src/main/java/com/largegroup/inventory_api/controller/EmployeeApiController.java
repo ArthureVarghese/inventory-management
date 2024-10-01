@@ -2,10 +2,7 @@ package com.largegroup.inventory_api.controller;
 
 import com.largegroup.inventory_api.exception.PageNumberException;
 import com.largegroup.inventory_api.service.EmployeeApiServiceFunctions;
-import com.largegroup.inventory_api.view.CategoryList;
-import com.largegroup.inventory_api.view.GenericResponse;
-import com.largegroup.inventory_api.view.ProductDto;
-import com.largegroup.inventory_api.view.ProductList;
+import com.largegroup.inventory_api.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -49,11 +46,14 @@ public class EmployeeApiController {
 
     @PostMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
-    public void addCategory() {
+    @ResponseBody
+    public GenericResponse addCategory(@RequestBody CategoryDto categoryDto,@RequestParam(name = "user-id") Integer userId) {
+        return employeeApiService.addCategoryToInventory(categoryDto,userId);
     }
 
     @GetMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.OK)
+    @ResponseBody
     public CategoryList getCategory(
         @RequestParam (name = "category-id", required = false) Integer categoryId,
         @RequestParam (name = "page", required = false, defaultValue = "1") String page)
