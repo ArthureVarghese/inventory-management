@@ -9,10 +9,7 @@ import com.largegroup.inventory_api.repository.CategoryRepository;
 import com.largegroup.inventory_api.repository.ProductRepository;
 import com.largegroup.inventory_api.repository.UserRepository;
 import com.largegroup.inventory_api.utils.CustomObjectMapper;
-import com.largegroup.inventory_api.view.CategoryList;
-import com.largegroup.inventory_api.view.GenericResponse;
-import com.largegroup.inventory_api.view.ProductDto;
-import com.largegroup.inventory_api.view.ProductList;
+import com.largegroup.inventory_api.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -89,9 +86,15 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     }
 
     @Override
-    public GenericResponse addCategoryToInventory() {
-        return null;
+    public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId) {
+
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId,DEFAULT_ACCESS_ROLE);
+        validateCategory(categoryDto);
+        Category category = categoryRepository.save(CustomObjectMapper.mapDtoToCategory(categoryDto));
+        return new GenericResponse("Category created successfully with id " + String.valueOf(category.getId()));
     }
+
 
     @Override
     public CategoryList getCategoryFromInventory(Integer categoryId, int page) {
@@ -142,7 +145,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
 
         List<String> errors = new ArrayList<>();
 
-        //TODO: Need to add a db check also
         Integer categoryId;
         try {
             categoryId = productDto.getCategoryId();
@@ -203,4 +205,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         return errors;
     }
 
+    private void validateCategory(CategoryDto categoryDto) {
+        if(categoryRepository.existsByName(categoryDto.getName()))
+            throw new ValidationError("", List.of("Category Already Exists"));
+    }
 }

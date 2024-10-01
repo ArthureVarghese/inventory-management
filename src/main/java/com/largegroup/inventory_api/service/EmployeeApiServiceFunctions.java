@@ -1,9 +1,6 @@
 package com.largegroup.inventory_api.service;
 
-import com.largegroup.inventory_api.view.CategoryList;
-import com.largegroup.inventory_api.view.GenericResponse;
-import com.largegroup.inventory_api.view.ProductDto;
-import com.largegroup.inventory_api.view.ProductList;
+import com.largegroup.inventory_api.view.*;
 
 public interface EmployeeApiServiceFunctions {
 
@@ -15,7 +12,7 @@ public interface EmployeeApiServiceFunctions {
 
     public GenericResponse deleteProductFromInventory();
 
-    public GenericResponse addCategoryToInventory();
+    public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId);
 
     public CategoryList getCategoryFromInventory(Integer categoryId, int page);
 
