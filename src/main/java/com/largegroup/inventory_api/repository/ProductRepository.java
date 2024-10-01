@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByIdAndCategoryId(Integer productId, Integer categoryId, Pageable pageRequest);
 
     boolean existsByNameAndCategoryId(String name, Integer categoryId);
+
+    boolean existsByCategoryId(Integer categoryId);
 }

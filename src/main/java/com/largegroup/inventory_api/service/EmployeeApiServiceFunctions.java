@@ -18,7 +18,7 @@ public interface EmployeeApiServiceFunctions {
 
     public GenericResponse updateCategoryInInventory();
 
-    public GenericResponse deleteCategoryFromInventory();
+    public void deleteCategoryFromInventory(Integer categoryId, Integer userId);
 
     public GenericResponse createOrder();
 }
