@@ -41,7 +41,9 @@ public class EmployeeApiController {
 
     @DeleteMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteProduct() {
+    public void deleteProduct(@RequestParam(name = "user-id") Integer userId,@RequestParam(name = "product-id") Integer productId) {
+        employeeApiService.deleteProductFromInventory(productId,userId);
+
     }
 
     @PostMapping (path = "/category", produces = "application/json")
@@ -68,8 +70,7 @@ public class EmployeeApiController {
 
     @DeleteMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCategory(@RequestParam(name = "user-id") Integer userId,@RequestParam(name = "product-id") Integer productId) {
-        employeeApiService.deleteProductFromInventory(productId,userId);
+    public void deleteCategory() {
     }
 
     @PutMapping (path = "/order", produces = "application/json")
