@@ -1,12 +1,11 @@
 package com.largegroup.inventory_api.view;
 
+import com.largegroup.inventory_api.model.Category;
+import com.largegroup.inventory_api.utils.CustomObjectMapper;
 import lombok.Data;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.largegroup.inventory_api.model.Category;
-import com.largegroup.inventory_api.utils.CustomObjectMapper;
 
 @Data
 public class CategoryList {

@@ -1,24 +1,26 @@
 package com.largegroup.inventory_api.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.largegroup.inventory_api.exception.AuthenticationError;
 import com.largegroup.inventory_api.exception.ValidationError;
 import com.largegroup.inventory_api.model.Category;
 import com.largegroup.inventory_api.model.Product;
+import com.largegroup.inventory_api.model.User;
 import com.largegroup.inventory_api.repository.CategoryRepository;
 import com.largegroup.inventory_api.repository.ProductRepository;
+import com.largegroup.inventory_api.repository.UserRepository;
 import com.largegroup.inventory_api.utils.CustomObjectMapper;
 import com.largegroup.inventory_api.view.CategoryList;
 import com.largegroup.inventory_api.view.GenericResponse;
 import com.largegroup.inventory_api.view.ProductDto;
 import com.largegroup.inventory_api.view.ProductList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -30,20 +32,28 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
-    public GenericResponse addProductToInventory(ProductDto productDto) {
+    public GenericResponse addProductToInventory(ProductDto productDto, Integer userId) {
+
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId,DEFAULT_ACCESS_ROLE);
+
         List<String> errors = validateProduct(productDto);
         if (!errors.isEmpty()) {
             throw new ValidationError("Invalid Fields Provided", errors);
         }
-        productRepository.save(CustomObjectMapper.mapDtoToProduct(productDto));
-        return new GenericResponse("Product created successfully");
+        Product product = productRepository.save(CustomObjectMapper.mapDtoToProduct(productDto));
+        return new GenericResponse("Product created successfully with id " + String.valueOf(product.getId()));
     }
+
 
     @Override
     public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page) {
 
-        Integer PAGE_SIZE=25;
+        int PAGE_SIZE=25;
         Pageable pageRequest = PageRequest.of(page,PAGE_SIZE);
         List<Product> products;
 
@@ -61,7 +71,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         {
             products=productRepository.findByCategoryId(categoryId,pageRequest);
             return new ProductList(products);
-        } 
+        }
 
         Page<Product> product = productRepository.findAll(pageRequest);
         return new ProductList(product.getContent());
@@ -111,6 +121,23 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         return null;
     }
 
+    private void validateUser(Integer userId, String defaultAccessRole) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new ValidationError("Invalid User ID",List.of("Invalid User ID Found While Validating"));
+        }
+        if(defaultAccessRole.equals("ADMIN")){
+            if(!user.getRole().equalsIgnoreCase("ADMIN")){
+                throw new AuthenticationError();
+            }
+        }
+        else {
+            if(!user.getRole().equalsIgnoreCase("CUSTOMER")){
+                throw new AuthenticationError();
+            }
+        }
+    }
+
     private List<String> validateProduct(ProductDto productDto) {
 
         List<String> errors = new ArrayList<>();
@@ -119,7 +146,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         Integer categoryId;
 
         try {
-            categoryId = Integer.parseInt(productDto.getCategoryId());
+            categoryId = productDto.getCategoryId();
         } catch (Exception ex) {
             errors.add("Category ID Should be Number");
             categoryId = null;
@@ -131,10 +158,13 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
 
             if (!categoryRepository.existsById(categoryId))
                 errors.add("Invalid Category ID Provided");
+
+            if (productRepository.existsByNameAndCategoryId(productDto.getName(),categoryId))
+                errors.add("Product Already Exists With Given name and Category ID");
         }
         Double price;
         try {
-            price = Double.parseDouble(productDto.getPrice());
+            price = productDto.getPrice();
         } catch (Exception ex) {
             errors.add("Invalid Price provided");
             price = null;
@@ -148,7 +178,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         Integer quantity;
 
         try {
-            quantity = Integer.parseInt(productDto.getQuantity());
+            quantity = productDto.getQuantity();
         } catch (Exception ex) {
             errors.add("Invalid Quantity provided");
             quantity = null;
