@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Service
-public class EmployeeApiService implements EmployeeApiServiceFunctions{
+public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
     @Autowired
     ProductRepository productRepository;
@@ -36,7 +36,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     public GenericResponse addProductToInventory(ProductDto productDto, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
-        validateUser(userId,DEFAULT_ACCESS_ROLE);
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
 
         List<String> errors = validateProduct(productDto);
         if (!errors.isEmpty()) {
@@ -50,23 +50,18 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     @Override
     public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page) {
 
-        int PAGE_SIZE=25;
-        Pageable pageRequest = PageRequest.of(page,PAGE_SIZE);
+        int PAGE_SIZE = 25;
+        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         List<Product> products;
 
-        if(productId!=null && categoryId!=null)
-        {
-            products=productRepository.findByIdAndCategoryId(productId,categoryId,pageRequest);
+        if (productId != null && categoryId != null) {
+            products = productRepository.findByIdAndCategoryId(productId, categoryId, pageRequest);
             return new ProductList(products);
-        }
-        else if(productId!=null)
-        {
-            products=productRepository.findById(productId,pageRequest);
+        } else if (productId != null) {
+            products = productRepository.findById(productId, pageRequest);
             return new ProductList(products);
-        }
-        else if(categoryId!=null)
-        {
-            products=productRepository.findByCategoryId(categoryId,pageRequest);
+        } else if (categoryId != null) {
+            products = productRepository.findByCategoryId(categoryId, pageRequest);
             return new ProductList(products);
         }
 
@@ -84,18 +79,13 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     public void deleteProductFromInventory(Integer productId, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
-        validateUser(userId,DEFAULT_ACCESS_ROLE);
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
 
-        if(!userRepository.existsById(userId))
+        if (!userRepository.existsById(userId))
             throw new ValidationError(List.of("No User with such id present"));
 
-        if(!productRepository.existsById(productId))
+        if (!productRepository.existsById(productId))
             throw new ValidationError(List.of("No Product with such id present"));
-
-        System.out.println("\n\n");
-        System.out.println(productId);
-        System.out.println(userId);
-        System.out.println("\n\n");
 
         productRepository.deleteById(productId);
     }
@@ -104,8 +94,11 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
-        validateUser(userId,DEFAULT_ACCESS_ROLE);
-        validateCategory(categoryDto);
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
+
+        if (categoryRepository.existsByName(categoryDto.getName()))
+            throw new ValidationError(List.of("Category Already Exists"));
+
         Category category = categoryRepository.save(CustomObjectMapper.mapDtoToCategory(categoryDto));
         return new GenericResponse("Category created successfully with id " + String.valueOf(category.getId()));
     }
@@ -120,7 +113,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
             return new CategoryList(categories.getContent());
         }
 
-        List<Category> employees = categoryRepository.findById(categoryId,pageRequest);
+        List<Category> employees = categoryRepository.findById(categoryId, pageRequest);
         return new CategoryList(employees);
     }
 
@@ -130,8 +123,20 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     }
 
     @Override
-    public GenericResponse deleteCategoryFromInventory() {
-        return null;
+    public void deleteCategoryFromInventory(Integer categoryId, Integer userId) {
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
+
+        if (!userRepository.existsById(userId))
+            throw new ValidationError(List.of("No User with such id present"));
+
+        if (!categoryRepository.existsById(categoryId))
+            throw new ValidationError(List.of("No Category with such id present"));
+
+        if(productRepository.existsByCategoryId(categoryId))
+            throw new ValidationError(List.of("Cannot Delete! There are products in this Category"));
+
+        categoryRepository.deleteById(categoryId);
     }
 
     @Override
@@ -144,13 +149,12 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         if (user == null) {
             throw new ValidationError(List.of("Invalid User ID Found While Validating"));
         }
-        if(defaultAccessRole.equals("ADMIN")){
-            if(!user.getRole().equalsIgnoreCase("ADMIN")){
+        if (defaultAccessRole.equals("ADMIN")) {
+            if (!user.getRole().equalsIgnoreCase("ADMIN")) {
                 throw new AuthenticationError();
             }
-        }
-        else {
-            if(!user.getRole().equalsIgnoreCase("CUSTOMER")){
+        } else {
+            if (!user.getRole().equalsIgnoreCase("CUSTOMER")) {
                 throw new AuthenticationError();
             }
         }
@@ -184,8 +188,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         if (price != null) {
             if (price <= 0)
                 errors.add("Price should be greater than 0");
-        }
-        else {
+        } else {
             errors.add("Invalid Price provided");
         }
 
@@ -200,28 +203,22 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         if (quantity != null) {
             if (quantity < 0)
                 errors.add("Quantity should be greater than 0");
-        }
-        else {
+        } else {
             errors.add("Invalid Quantity provided");
         }
 
-        if(!errors.isEmpty())
+        if (!errors.isEmpty())
             return errors;
 
-        if(categoryId!=null){
-            if (!categoryRepository.existsById(categoryId)){
+        if (categoryId != null) {
+            if (!categoryRepository.existsById(categoryId)) {
                 errors.add("Invalid Category ID Provided");
                 return errors;
             }
 
-            if (productRepository.existsByNameAndCategoryId(productDto.getName(),categoryId))
+            if (productRepository.existsByNameAndCategoryId(productDto.getName(), categoryId))
                 errors.add("Product Already Exists With Given name and Category ID");
         }
         return errors;
-    }
-
-    private void validateCategory(CategoryDto categoryDto) {
-        if(categoryRepository.existsByName(categoryDto.getName()))
-            throw new ValidationError(List.of("Category Already Exists"));
     }
 }

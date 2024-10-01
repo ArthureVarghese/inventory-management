@@ -70,7 +70,9 @@ public class EmployeeApiController {
 
     @DeleteMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCategory() {
+    public void deleteCategory(@RequestParam(name = "user-id") Integer userId,@RequestParam(name = "category-id") Integer categoryId) {
+
+        employeeApiService.deleteCategoryFromInventory(categoryId,userId);
     }
 
     @PutMapping (path = "/order", produces = "application/json")
