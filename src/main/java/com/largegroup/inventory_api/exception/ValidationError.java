@@ -10,8 +10,8 @@ public class ValidationError extends RuntimeException {
 
     private final List<String> errors;
 
-    public ValidationError(String message, List<String> errors) {
-        super("Invalid Value detected : " + message);
+    public ValidationError(List<String> errors) {
+        super("Invalid Value detected");
         this.errors = errors;
     }
 }

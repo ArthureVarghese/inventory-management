@@ -40,7 +40,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
 
         List<String> errors = validateProduct(productDto);
         if (!errors.isEmpty()) {
-            throw new ValidationError("Invalid Fields Provided", errors);
+            throw new ValidationError(errors);
         }
         Product product = productRepository.save(CustomObjectMapper.mapDtoToProduct(productDto));
         return new GenericResponse("Product created successfully with id " + String.valueOf(product.getId()));
@@ -87,7 +87,15 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
         validateUser(userId,DEFAULT_ACCESS_ROLE);
 
         if(!userRepository.existsById(userId))
-            throw new ValidationError("Unknown User ID",List.of("No User with such id present"));
+            throw new ValidationError(List.of("No User with such id present"));
+
+        if(!productRepository.existsById(productId))
+            throw new ValidationError(List.of("No Product with such id present"));
+
+        System.out.println("\n\n");
+        System.out.println(productId);
+        System.out.println(userId);
+        System.out.println("\n\n");
 
         productRepository.deleteById(productId);
     }
@@ -134,7 +142,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
     private void validateUser(Integer userId, String defaultAccessRole) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new ValidationError("Invalid User ID",List.of("Invalid User ID Found While Validating"));
+            throw new ValidationError(List.of("Invalid User ID Found While Validating"));
         }
         if(defaultAccessRole.equals("ADMIN")){
             if(!user.getRole().equalsIgnoreCase("ADMIN")){
@@ -214,6 +222,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions{
 
     private void validateCategory(CategoryDto categoryDto) {
         if(categoryRepository.existsByName(categoryDto.getName()))
-            throw new ValidationError("", List.of("Category Already Exists"));
+            throw new ValidationError(List.of("Category Already Exists"));
     }
 }
