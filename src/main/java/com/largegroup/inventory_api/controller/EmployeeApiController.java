@@ -73,7 +73,12 @@ public class EmployeeApiController {
 
     @PutMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void updateCategory() {
+    public void updateCategory(
+        @RequestParam (name = "category-id", required = true) Integer categoryId,
+        @RequestParam (name = "name", required = true) String name,
+        @RequestParam (name="user-id",required = true) Integer userId ) 
+    {
+        employeeApiService.updateCategoryInInventory(categoryId,name,userId);
     }
 
     @DeleteMapping (path = "/category", produces = "application/json")

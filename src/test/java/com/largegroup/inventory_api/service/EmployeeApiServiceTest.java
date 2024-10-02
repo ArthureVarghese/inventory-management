@@ -1,5 +1,6 @@
 package com.largegroup.inventory_api.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -270,6 +271,75 @@ public class EmployeeApiServiceTest {
         assertThat(exception.getErrors().get(0)).isEqualTo("Can't change to same quantity");
 
     }
+
+    @Test
+    void testUpdateCategoryInInventory_Valid() {
+
+        mockUser.setRole("Admin");
+        mockCategory.setName("Category");
+        when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
+        when(categoryRepository.findById(1)).thenReturn(Optional.of(mockCategory));
+        when(categoryRepository.existsByName(any())).thenReturn(false);
+
+        employeeApiService.updateCategoryInInventory(1,"Name",1);
+
+        assertThat(mockCategory.getName()).isEqualTo("Name");
+        
+    }
+
+    @Test
+    void testUpdateCategoryInInventory_InvalidUser() {
+
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
+            employeeApiService.updateCategoryInInventory(1,"A",1);
+        });        
+        assertThat(exception.getErrors().get(0)).isEqualTo("Invalid User ID Found While Validating");
+
+        mockUser.setRole("Buyer");
+        when(userRepository.findById(any(Integer.class))).thenReturn(Optional.of(mockUser));
+
+        Exception exceptionAuthentication = assertThrows(AuthenticationError.class, () -> {
+            employeeApiService.updateCategoryInInventory(1,"A",1);
+        });        
+        assertThat(exceptionAuthentication.getMessage()).isEqualTo("Action is Not allowed For Current User Role");
+        
+    }
+
+    @Test
+    void testUpdateCategoryInInventory_InvalidCategory() {
+
+
+        // Invalid Category Id
+        mockUser.setRole("Admin");
+        mockCategory.setName("Category");
+        when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
+
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
+            employeeApiService.updateCategoryInInventory(1,"A",1);
+        });        
+        assertThat(exception.getErrors().get(0)).isEqualTo("No category found with the given id");
+
+
+        // Category has the same name as the given name
+        mockCategory.setName("Category");
+        when(categoryRepository.findById(1)).thenReturn(Optional.of(mockCategory));
+        
+        exception = assertThrows(ValidationError.class, () -> {
+            employeeApiService.updateCategoryInInventory(1,"Category",1);
+        });        
+        assertThat(exception.getErrors().get(0)).isEqualTo("Can't change to the Same Category name");
+        
+
+        // Name already exists
+        when(categoryRepository.existsByName(any())).thenReturn(true);
+
+        exception = assertThrows(ValidationError.class, () -> {
+            employeeApiService.updateCategoryInInventory(1,"A",1);
+        });        
+        assertThat(exception.getErrors().get(0)).isEqualTo("Category with the same name already exists");
+    }
+
+
 
 
 

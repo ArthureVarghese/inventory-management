@@ -173,8 +173,23 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
-    public GenericResponse updateCategoryInInventory() {
-        return null;
+    public void updateCategoryInInventory(Integer categoryId, String name, Integer userId) {
+
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
+
+        Category category = categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new ValidationError(List.of("No category found with the given id")));
+
+        if(category.getName().equalsIgnoreCase(name))
+            throw new ValidationError(List.of("Can't change to the Same Category name"));
+
+        if(categoryRepository.existsByName(name))
+            throw new ValidationError(List.of("Category with the same name already exists"));
+
+        category.setName(name);
+        categoryRepository.save(category);
+
     }
 
     @Override
