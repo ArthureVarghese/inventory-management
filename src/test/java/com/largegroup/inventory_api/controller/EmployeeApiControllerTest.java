@@ -139,8 +139,25 @@ public class EmployeeApiControllerTest {
         }
     }
 
+    @Test
+    void testUpdateCategory_Valid() throws Exception {
 
+        mvc.perform(MockMvcRequestBuilders.put("/api/v1/category")
+                .queryParam("category-id","1")
+                .queryParam("name","A")
+                .queryParam("user-id","1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        
+    }
 
+    @Test
+    void testUpdateCategory_WithNoParam() throws Exception {
 
+        mvc.perform(MockMvcRequestBuilders.put("/api/v1/category")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        
+    }
 
 }
