@@ -1,6 +1,8 @@
 package com.largegroup.inventory_api.service;
 
 import com.largegroup.inventory_api.exception.AuthenticationError;
+import java.util.List;
+
 import com.largegroup.inventory_api.exception.ValidationError;
 import com.largegroup.inventory_api.model.Category;
 import com.largegroup.inventory_api.model.Product;
@@ -17,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -71,8 +73,61 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
-    public GenericResponse updateProductInInventory() {
-        return null;
+    @Transactional
+    public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId) {
+
+        if(productName==null && categoryId==null && price==null && quantity==null)
+            throw new ValidationError(List.of("No parameters provided for updation"));
+
+        String DEFAULT_ACCESS_ROLE = "ADMIN";
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
+
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new ValidationError(List.of("No Product Found with the Given Product-id")));
+
+        if(productName!=null){
+
+            if(productName.equalsIgnoreCase(product.getName()))
+                throw new ValidationError(List.of("Can't change to same product name"));
+
+            product.setName(productName);
+        }
+
+        if(categoryId!=null){
+
+            if(categoryId.equals(product.getCategoryId()))
+                throw new ValidationError(List.of("Can't change to same category id"));
+
+            if(!categoryRepository.existsById(categoryId))
+                throw new ValidationError(List.of("No Category Found with the Given Category-id"));
+
+            product.setCategoryId(categoryId);
+        }
+
+        if(price!=null){
+
+            if(price.equals(product.getPrice()))
+                throw new ValidationError(List.of("Can't change to same price"));
+
+            if(price<=0)
+                throw new ValidationError(List.of("Price should be greater than 0"));
+
+            product.setPrice(price);
+        }
+
+        if(quantity!=null){
+
+            if(quantity.equals(product.getQuantity()))
+                throw new ValidationError(List.of("Can't change to same quantity"));
+
+            if(quantity<=0)
+                throw new ValidationError(List.of("Quantity should be greater than 0"));
+
+            product.setQuantity(quantity);
+        }
+
+        productRepository.save(product);
+        
     }
 
     @Override

@@ -8,7 +8,7 @@ public interface EmployeeApiServiceFunctions {
 
     public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page);
 
-    public GenericResponse updateProductInInventory();
+    public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId);
 
     public void deleteProductFromInventory(Integer productId, Integer userId);
 

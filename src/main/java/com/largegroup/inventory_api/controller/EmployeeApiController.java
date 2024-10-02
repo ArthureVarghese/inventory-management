@@ -29,14 +29,22 @@ public class EmployeeApiController {
     public ProductList getProduct(
         @RequestParam (name = "product-id", required = false) Integer productId,
         @RequestParam (name = "category-id", required = false) Integer categoryId,
-        @RequestParam (name = "page", required = false, defaultValue = "1") String page)
+        @RequestParam (name = "page", required = false, defaultValue = "1") String page)  
     {
-        return employeeApiService.getProductFromInventory(productId,categoryId,parseAndValidatePageNumber(page));
+        return employeeApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page));
     }
 
     @PutMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void updateProduct() {
+    public void updateProduct(
+        @RequestParam (name = "product-id", required = true) Integer productId,
+        @RequestParam (name = "product-name", required = false) String productName,
+        @RequestParam (name = "category-id", required = false) Integer categoryId,
+        @RequestParam (name = "price", required = false) Double price,
+        @RequestParam (name = "quantity", required = false) Integer quantity,
+        @RequestParam (name="user-id",required = true) Integer userId ) 
+    {
+        employeeApiService.updateProductInInventory(productId,productName,categoryId,price,quantity,userId);
     }
 
     @DeleteMapping (path = "/product", produces = "application/json")
