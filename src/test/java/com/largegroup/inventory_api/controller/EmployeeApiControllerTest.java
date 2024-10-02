@@ -60,7 +60,7 @@ public class EmployeeApiControllerTest {
                     .queryParam("page", "-1")
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.message").value("Invalid Value for Page Number"));
+                    .andExpect(jsonPath("$.message").value("Invalid Page Number Provided"));
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -115,6 +115,30 @@ public class EmployeeApiControllerTest {
                 .andExpect(jsonPath("$.categories", hasSize(1)));
         
     }
+
+    @Test
+    void testUpdateProduct_Valid() throws Exception{
+
+        mvc.perform(MockMvcRequestBuilders.put("/api/v1/product")
+                .queryParam("product-id","1")
+                .queryParam("user-id","1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        
+    }
+
+    @Test
+    void testUpdateProduct_WithNoParam() throws Exception{
+        try{
+            mvc.perform(MockMvcRequestBuilders.put("/api/v1/product")
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 
 

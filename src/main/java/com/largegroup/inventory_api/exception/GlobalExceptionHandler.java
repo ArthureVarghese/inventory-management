@@ -60,4 +60,5 @@ public class GlobalExceptionHandler {
     public GenericResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
         return new GenericResponse("Invalid Data Type for Parameter");
     }
+
 }
