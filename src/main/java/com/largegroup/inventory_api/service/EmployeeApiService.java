@@ -1,5 +1,7 @@
 package com.largegroup.inventory_api.service;
 
+import com.largegroup.inventory_api.cache.annotation.CacheDelete;
+import com.largegroup.inventory_api.cache.annotation.Cached;
 import com.largegroup.inventory_api.exception.AuthenticationError;
 import com.largegroup.inventory_api.exception.OrderCreationError;
 import com.largegroup.inventory_api.exception.ValidationError;
@@ -40,6 +42,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     OrderRepository orderRepository;
 
     @Override
+    @CacheDelete
     public GenericResponse addProductToInventory(ProductDto productDto, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
@@ -55,6 +58,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
 
     @Override
+    @Cached
     public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page) {
 
         int PAGE_SIZE = 25;
@@ -78,6 +82,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
+    @CacheDelete
     @Transactional
     public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId) {
 
@@ -138,6 +143,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
+    @CacheDelete
     public void deleteProductFromInventory(Integer productId, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
@@ -153,6 +159,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
+    @CacheDelete
     public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
@@ -167,6 +174,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
 
     @Override
+    @Cached
     public CategoryList getCategoryFromInventory(Integer categoryId, int page) {
         Pageable pageRequest = PageRequest.of(page, 25);
 
@@ -180,6 +188,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
+    @CacheDelete
     public void updateCategoryInInventory(Integer categoryId, String name, Integer userId) {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
@@ -200,6 +209,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
+    @CacheDelete
     public void deleteCategoryFromInventory(Integer categoryId, Integer userId) {
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
