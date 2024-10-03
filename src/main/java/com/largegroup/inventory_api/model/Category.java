@@ -7,13 +7,13 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity(name="category")
+@Entity (name = "category")
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     private String name;
 
 }

@@ -18,8 +18,8 @@ public class EmployeeApiController {
     @PostMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
-    public GenericResponse addProduct(@RequestBody ProductDto productDto, @RequestParam(name = "user-id") Integer userId) {
-        return employeeApiService.addProductToInventory(productDto,userId);
+    public GenericResponse addProduct(@RequestBody ProductDto productDto, @RequestParam (name = "user-id") Integer userId) {
+        return employeeApiService.addProductToInventory(productDto, userId);
     }
 
 
@@ -27,74 +27,70 @@ public class EmployeeApiController {
     @ResponseStatus (HttpStatus.OK)
     @ResponseBody
     public ProductList getProduct(
-        @RequestParam (name = "product-id", required = false) Integer productId,
-        @RequestParam (name = "category-id", required = false) Integer categoryId,
-        @RequestParam (name = "page", required = false, defaultValue = "1") String page)  
-    {
+            @RequestParam (name = "product-id", required = false) Integer productId,
+            @RequestParam (name = "category-id", required = false) Integer categoryId,
+            @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
         return employeeApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page));
     }
 
     @PutMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateProduct(
-        @RequestParam (name = "product-id", required = true) Integer productId,
-        @RequestParam (name = "product-name", required = false) String productName,
-        @RequestParam (name = "category-id", required = false) Integer categoryId,
-        @RequestParam (name = "price", required = false) Double price,
-        @RequestParam (name = "quantity", required = false) Integer quantity,
-        @RequestParam (name="user-id",required = true) Integer userId ) 
-    {
-        employeeApiService.updateProductInInventory(productId,productName,categoryId,price,quantity,userId);
+            @RequestParam (name = "product-id", required = true) Integer productId,
+            @RequestParam (name = "product-name", required = false) String productName,
+            @RequestParam (name = "category-id", required = false) Integer categoryId,
+            @RequestParam (name = "price", required = false) Double price,
+            @RequestParam (name = "quantity", required = false) Integer quantity,
+            @RequestParam (name = "user-id", required = true) Integer userId) {
+        employeeApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId);
     }
 
     @DeleteMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteProduct(@RequestParam(name = "user-id") Integer userId,@RequestParam(name = "product-id") Integer productId) {
-        employeeApiService.deleteProductFromInventory(productId,userId);
+    public void deleteProduct(@RequestParam (name = "user-id") Integer userId, @RequestParam (name = "product-id") Integer productId) {
+        employeeApiService.deleteProductFromInventory(productId, userId);
 
     }
 
     @PostMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
-    public GenericResponse addCategory(@RequestBody CategoryDto categoryDto,@RequestParam(name = "user-id") Integer userId) {
-        return employeeApiService.addCategoryToInventory(categoryDto,userId);
+    public GenericResponse addCategory(@RequestBody CategoryDto categoryDto, @RequestParam (name = "user-id") Integer userId) {
+        return employeeApiService.addCategoryToInventory(categoryDto, userId);
     }
 
     @GetMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.OK)
     @ResponseBody
     public CategoryList getCategory(
-        @RequestParam (name = "category-id", required = false) Integer categoryId,
-        @RequestParam (name = "page", required = false, defaultValue = "1") String page)
-    {
-        return employeeApiService.getCategoryFromInventory(categoryId,parseAndValidatePageNumber(page));
+            @RequestParam (name = "category-id", required = false) Integer categoryId,
+            @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
+        return employeeApiService.getCategoryFromInventory(categoryId, parseAndValidatePageNumber(page));
     }
 
     @PutMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateCategory(
-        @RequestParam (name = "category-id", required = true) Integer categoryId,
-        @RequestParam (name = "name", required = true) String name,
-        @RequestParam (name="user-id",required = true) Integer userId ) 
-    {
-        employeeApiService.updateCategoryInInventory(categoryId,name,userId);
+            @RequestParam (name = "category-id", required = true) Integer categoryId,
+            @RequestParam (name = "name", required = true) String name,
+            @RequestParam (name = "user-id", required = true) Integer userId) {
+        employeeApiService.updateCategoryInInventory(categoryId, name, userId);
     }
 
     @DeleteMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCategory(@RequestParam(name = "user-id") Integer userId,@RequestParam(name = "category-id") Integer categoryId) {
+    public void deleteCategory(@RequestParam (name = "user-id") Integer userId, @RequestParam (name = "category-id") Integer categoryId) {
 
-        employeeApiService.deleteCategoryFromInventory(categoryId,userId);
+        employeeApiService.deleteCategoryFromInventory(categoryId, userId);
     }
 
     @PutMapping (path = "/order", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
-    public OrderDto createOrder(@RequestParam(name = "product-id") Integer productId,
-                            @RequestParam(name = "user-id") Integer userId,
-                            @RequestParam(name = "quantity") Integer quantity) {
-        return employeeApiService.createOrder(productId,userId,quantity);
+    public OrderDto createOrder(@RequestParam (name = "product-id") Integer productId,
+                                @RequestParam (name = "user-id") Integer userId,
+                                @RequestParam (name = "quantity") Integer quantity) {
+        return employeeApiService.createOrder(productId, userId, quantity);
     }
 
     // Throws error if page number is non-numeric or less than 0

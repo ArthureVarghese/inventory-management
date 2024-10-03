@@ -17,54 +17,54 @@ public class GlobalExceptionHandler {
     @ExceptionHandler (ValidationError.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponse handleValidationError(ValidationError ex){
-        return new ErrorResponse("Invalid Values Provided",ex.getErrors());
+    public ErrorResponse handleValidationError(ValidationError ex) {
+        return new ErrorResponse("Invalid Values Provided", ex.getErrors());
     }
 
-    @ExceptionHandler(NumberFormatException.class)
-    public void handleNumberFormatException(NumberFormatException ex){
+    @ExceptionHandler (NumberFormatException.class)
+    public void handleNumberFormatException(NumberFormatException ex) {
         throw new PageNumberException();
     }
 
-    @ExceptionHandler(PageNumberException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler (PageNumberException.class)
+    @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GenericResponse pageNumberException(PageNumberException ex){
+    public GenericResponse pageNumberException(PageNumberException ex) {
         return new GenericResponse(ex.getMessage());
     }
 
     @ExceptionHandler (AuthenticationError.class)
     @ResponseStatus (HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public GenericResponse handleAuthenticationError(AuthenticationError ex){
+    public GenericResponse handleAuthenticationError(AuthenticationError ex) {
         return new GenericResponse(ex.getMessage());
     }
 
     @ExceptionHandler (HttpMessageNotReadableException.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GenericResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex){
+    public GenericResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return new GenericResponse("Invalid JSON Provided");
     }
 
     @ExceptionHandler (MissingServletRequestParameterException.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GenericResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException ex){
+    public GenericResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         return new GenericResponse(ex.getMessage().split("for")[0].trim());
     }
 
     @ExceptionHandler (MethodArgumentTypeMismatchException.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GenericResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
+    public GenericResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         return new GenericResponse("Invalid Data Type for Parameter");
     }
 
     @ExceptionHandler (OrderCreationError.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GenericResponse handleOrderCreationError(OrderCreationError ex){
+    public GenericResponse handleOrderCreationError(OrderCreationError ex) {
         return new GenericResponse(ex.getMessage());
     }
 }

@@ -9,16 +9,18 @@ import lombok.Setter;
 @Getter
 public class OrderDto {
 
-    @JsonProperty("invoice_number")
+    @JsonProperty ("invoice_number")
     Integer invoiceId;
 
-    @JsonProperty("user_id")
+    @JsonProperty ("user_id")
     Integer userId;
 
-    @JsonProperty("product_id")
+    @JsonProperty ("product_id")
     Integer productId;
 
     Integer quantity;
 
-    Double  total;
+    Double price;
+
+    Double total;
 }

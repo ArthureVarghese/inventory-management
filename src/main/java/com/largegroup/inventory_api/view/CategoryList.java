@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 public class CategoryList {
     List<CategoryDto> categories;
 
-    public CategoryList(List<Category> categories){
+    public CategoryList(List<Category> categories) {
         this.categories = categories.stream()
-                                .map(CustomObjectMapper::mapCategoryToDto)
-                                .collect(Collectors.toList());
+                .map(CustomObjectMapper::mapCategoryToDto)
+                .collect(Collectors.toList());
     }
 }
 
