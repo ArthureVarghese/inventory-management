@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class ProductList {
     List<ProductDto> products;
 
-    public ProductList(List<Product> products){
-            this.products = Collections.unmodifiableList(products.stream()
+    public ProductList(List<Product> products) {
+        this.products = Collections.unmodifiableList(products.stream()
                 .map(CustomObjectMapper::mapProductToDto)
                 .collect(Collectors.toList()));
-        
+
     }
 }

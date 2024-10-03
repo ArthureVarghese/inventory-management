@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findById(Integer categoryId, Pageable pageRequest);
+
     boolean existsByName(String name);
 }

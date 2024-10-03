@@ -1,8 +1,6 @@
 package com.largegroup.inventory_api.service;
 
 import com.largegroup.inventory_api.exception.AuthenticationError;
-import java.util.List;
-
 import com.largegroup.inventory_api.exception.OrderCreationError;
 import com.largegroup.inventory_api.exception.ValidationError;
 import com.largegroup.inventory_api.model.Category;
@@ -15,6 +13,7 @@ import com.largegroup.inventory_api.repository.ProductRepository;
 import com.largegroup.inventory_api.repository.UserRepository;
 import com.largegroup.inventory_api.utils.CustomObjectMapper;
 import com.largegroup.inventory_api.view.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import jakarta.transaction.Transactional;
+import java.util.List;
 
 
 @Service
@@ -82,58 +81,60 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     @Transactional
     public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId) {
 
-        if(productName==null && categoryId==null && price==null && quantity==null)
+        if (productName == null && categoryId == null && price == null && quantity == null)
             throw new ValidationError(List.of("No parameters provided"));
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ValidationError(List.of("No Product Found with the Given Product-id")));
+                .orElseThrow(() -> new ValidationError(List.of("No Product Found with the Given Product-id")));
 
-        if(productName!=null){
+        if (productName != null) {
 
-            if(productName.equalsIgnoreCase(product.getName()))
+            if (productName.equalsIgnoreCase(product.getName()))
                 throw new ValidationError(List.of("Can't change to same product name"));
 
             product.setName(productName);
         }
 
-        if(categoryId!=null){
+        if (categoryId != null) {
 
-            if(categoryId.equals(product.getCategoryId()))
+            if (categoryId.equals(product.getCategoryId()))
                 throw new ValidationError(List.of("Can't change to same category id"));
 
-            if(!categoryRepository.existsById(categoryId))
+            if (!categoryRepository.existsById(categoryId))
                 throw new ValidationError(List.of("No Category Found with the Given Category-id"));
 
             product.setCategoryId(categoryId);
         }
 
-        if(price!=null){
 
-            if(price.equals(product.getPrice()))
+        if (price != null) {
+            price = Math.round(price * 100.00) / 100.00;
+
+            if (price.equals(product.getPrice()))
                 throw new ValidationError(List.of("Can't change to same price"));
 
-            if(price<=0)
+            if (price <= 0)
                 throw new ValidationError(List.of("Price should be greater than 0"));
 
             product.setPrice(price);
         }
 
-        if(quantity!=null){
+        if (quantity != null) {
 
-            if(quantity.equals(product.getQuantity()))
+            if (quantity.equals(product.getQuantity()))
                 throw new ValidationError(List.of("Can't change to same quantity"));
 
-            if(quantity<=0)
+            if (quantity <= 0)
                 throw new ValidationError(List.of("Quantity should be greater than 0"));
 
             product.setQuantity(quantity);
         }
 
         productRepository.save(product);
-        
+
     }
 
     @Override
@@ -185,12 +186,12 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
         Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ValidationError(List.of("No category found with the given id")));
+                .orElseThrow(() -> new ValidationError(List.of("No category found with the given id")));
 
-        if(category.getName().equalsIgnoreCase(name))
+        if (category.getName().equalsIgnoreCase(name))
             throw new ValidationError(List.of("Can't change to the Same Category name"));
 
-        if(categoryRepository.existsByName(name))
+        if (categoryRepository.existsByName(name))
             throw new ValidationError(List.of("Category with the same name already exists"));
 
         category.setName(name);
@@ -206,7 +207,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         if (!categoryRepository.existsById(categoryId))
             throw new ValidationError(List.of("No Category with such id present"));
 
-        if(productRepository.existsByCategoryId(categoryId))
+        if (productRepository.existsByCategoryId(categoryId))
             throw new ValidationError(List.of("Cannot Delete! There are products in this Category"));
 
         categoryRepository.deleteById(categoryId);
@@ -220,13 +221,13 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
         Product product = productRepository.findById(productId).orElse(null);
-        if(product == null)
+        if (product == null)
             throw new OrderCreationError("No Product Found With Given ID");
 
-        if(quantity < 1)
+        if (quantity < 1)
             throw new OrderCreationError("Quantity Should be greater than 0");
 
-        if(product.getQuantity() < quantity)
+        if (product.getQuantity() < quantity)
             throw new OrderCreationError("Cannot Create Order! Not enough Quantity available");
 
         product.setQuantity(product.getQuantity() - quantity);
@@ -235,8 +236,9 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
         order.setUserId(userId);
         order.setProductId(productId);
+        order.setPrice(product.getPrice());
         order.setQuantity(quantity);
-        order.setTotal(Math.round( quantity * product.getPrice() * 100.0) / 100.0);
+        order.setTotal(Math.round(quantity * product.getPrice() * 100.0) / 100.0);
 
         order = orderRepository.save(order);
         productRepository.save(product);

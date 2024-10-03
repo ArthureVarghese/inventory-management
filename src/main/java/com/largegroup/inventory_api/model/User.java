@@ -7,11 +7,11 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity(name="user")
+@Entity (name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
