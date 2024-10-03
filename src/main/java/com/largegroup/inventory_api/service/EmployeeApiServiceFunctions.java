@@ -20,5 +20,5 @@ public interface EmployeeApiServiceFunctions {
 
     public void deleteCategoryFromInventory(Integer categoryId, Integer userId);
 
-    public GenericResponse createOrder();
+    public OrderDto createOrder(Integer productId, Integer userId, Integer quantity);
 }

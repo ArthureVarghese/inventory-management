@@ -1,9 +1,12 @@
 package com.largegroup.inventory_api.utils;
 
 import com.largegroup.inventory_api.model.Category;
+import com.largegroup.inventory_api.model.Order;
 import com.largegroup.inventory_api.model.Product;
 import com.largegroup.inventory_api.view.CategoryDto;
+import com.largegroup.inventory_api.view.OrderDto;
 import com.largegroup.inventory_api.view.ProductDto;
+import org.aspectj.weaver.ast.Or;
 
 public class CustomObjectMapper {
 
@@ -38,5 +41,17 @@ public class CustomObjectMapper {
         Category category = new Category();
         category.setName(categoryDto.getName());
         return category;
+    }
+
+    public static OrderDto mapOrderToDto(Order order){
+        OrderDto orderDto = new OrderDto();
+
+        orderDto.setInvoiceId(order.getId());
+        orderDto.setUserId(order.getUserId());
+        orderDto.setProductId(order.getProductId());
+        orderDto.setQuantity(order.getQuantity());
+        orderDto.setTotal(order.getTotal());
+
+        return orderDto;
     }
 }

@@ -61,4 +61,10 @@ public class GlobalExceptionHandler {
         return new GenericResponse("Invalid Data Type for Parameter");
     }
 
+    @ExceptionHandler (OrderCreationError.class)
+    @ResponseStatus (HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GenericResponse handleOrderCreationError(OrderCreationError ex){
+        return new GenericResponse(ex.getMessage());
+    }
 }

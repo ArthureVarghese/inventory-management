@@ -3,11 +3,14 @@ package com.largegroup.inventory_api.service;
 import com.largegroup.inventory_api.exception.AuthenticationError;
 import java.util.List;
 
+import com.largegroup.inventory_api.exception.OrderCreationError;
 import com.largegroup.inventory_api.exception.ValidationError;
 import com.largegroup.inventory_api.model.Category;
+import com.largegroup.inventory_api.model.Order;
 import com.largegroup.inventory_api.model.Product;
 import com.largegroup.inventory_api.model.User;
 import com.largegroup.inventory_api.repository.CategoryRepository;
+import com.largegroup.inventory_api.repository.OrderRepository;
 import com.largegroup.inventory_api.repository.ProductRepository;
 import com.largegroup.inventory_api.repository.UserRepository;
 import com.largegroup.inventory_api.utils.CustomObjectMapper;
@@ -34,6 +37,9 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    OrderRepository orderRepository;
+
     @Override
     public GenericResponse addProductToInventory(ProductDto productDto, Integer userId) {
 
@@ -45,7 +51,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             throw new ValidationError(errors);
         }
         Product product = productRepository.save(CustomObjectMapper.mapDtoToProduct(productDto));
-        return new GenericResponse("Product created successfully with id " + String.valueOf(product.getId()));
+        return new GenericResponse("Product created successfully with id " + product.getId());
     }
 
 
@@ -77,7 +83,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId) {
 
         if(productName==null && categoryId==null && price==null && quantity==null)
-            throw new ValidationError(List.of("No parameters provided for updation"));
+            throw new ValidationError(List.of("No parameters provided"));
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
@@ -155,7 +161,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             throw new ValidationError(List.of("Category Already Exists"));
 
         Category category = categoryRepository.save(CustomObjectMapper.mapDtoToCategory(categoryDto));
-        return new GenericResponse("Category created successfully with id " + String.valueOf(category.getId()));
+        return new GenericResponse("Category created successfully with id " + category.getId());
     }
 
 
@@ -197,9 +203,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
-        if (!userRepository.existsById(userId))
-            throw new ValidationError(List.of("No User with such id present"));
-
         if (!categoryRepository.existsById(categoryId))
             throw new ValidationError(List.of("No Category with such id present"));
 
@@ -210,8 +213,35 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     }
 
     @Override
-    public GenericResponse createOrder() {
-        return null;
+    @Transactional
+    public OrderDto createOrder(Integer productId, Integer userId, Integer quantity) {
+
+        String DEFAULT_ACCESS_ROLE = "CUSTOMER";
+        validateUser(userId, DEFAULT_ACCESS_ROLE);
+
+        Product product = productRepository.findById(productId).orElse(null);
+        if(product == null)
+            throw new OrderCreationError("No Product Found With Given ID");
+
+        if(quantity < 1)
+            throw new OrderCreationError("Quantity Should be greater than 0");
+
+        if(product.getQuantity() < quantity)
+            throw new OrderCreationError("Cannot Create Order! Not enough Quantity available");
+
+        product.setQuantity(product.getQuantity() - quantity);
+
+        Order order = new Order();
+
+        order.setUserId(userId);
+        order.setProductId(productId);
+        order.setQuantity(quantity);
+        order.setTotal(Math.round( quantity * product.getPrice() * 100.0) / 100.0);
+
+        order = orderRepository.save(order);
+        productRepository.save(product);
+
+        return CustomObjectMapper.mapOrderToDto(order);
     }
 
     private void validateUser(Integer userId, String defaultAccessRole) {
