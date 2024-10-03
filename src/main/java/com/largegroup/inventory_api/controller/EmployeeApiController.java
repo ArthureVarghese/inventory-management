@@ -89,8 +89,12 @@ public class EmployeeApiController {
     }
 
     @PutMapping (path = "/order", produces = "application/json")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void createOrder() {
+    @ResponseStatus (HttpStatus.CREATED)
+    @ResponseBody
+    public OrderDto createOrder(@RequestParam(name = "product-id") Integer productId,
+                            @RequestParam(name = "user-id") Integer userId,
+                            @RequestParam(name = "quantity") Integer quantity) {
+        return employeeApiService.createOrder(productId,userId,quantity);
     }
 
     // Throws error if page number is non-numeric or less than 0
