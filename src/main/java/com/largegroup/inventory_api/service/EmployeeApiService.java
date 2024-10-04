@@ -149,9 +149,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
-        if (!userRepository.existsById(userId))
-            throw new ValidationError(List.of("No User with such id present"));
-
         if (!productRepository.existsById(productId))
             throw new ValidationError(List.of("No Product with such id present"));
 
@@ -276,61 +273,28 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
         List<String> errors = new ArrayList<>();
 
-        Integer categoryId;
-        try {
-            categoryId = productDto.getCategoryId();
-        } catch (Exception ex) {
-            errors.add("Category ID Should be Number");
-            categoryId = null;
-        }
+        if (productDto.getCategoryId() < 1)
+            errors.add("Category ID should be greater than 0");
 
-        if (categoryId != null) {
-            if (categoryId < 1)
-                errors.add("Category ID should be greater than 0");
-        }
 
-        Double price;
-        try {
-            price = productDto.getPrice();
-        } catch (Exception ex) {
+        if (productDto.getPrice() <= 0)
+            errors.add("Price should be greater than 0");
 
-            price = null;
-        }
+        if (productDto.getQuantity() < 0)
+            errors.add("Quantity should be greater than 0");
 
-        if (price != null) {
-            if (price <= 0)
-                errors.add("Price should be greater than 0");
-        } else {
-            errors.add("Invalid Price provided");
-        }
-
-        Integer quantity;
-
-        try {
-            quantity = productDto.getQuantity();
-        } catch (Exception ex) {
-            quantity = null;
-        }
-
-        if (quantity != null) {
-            if (quantity < 0)
-                errors.add("Quantity should be greater than 0");
-        } else {
-            errors.add("Invalid Quantity provided");
-        }
 
         if (!errors.isEmpty())
             return errors;
 
-        if (categoryId != null) {
-            if (!categoryRepository.existsById(categoryId)) {
-                errors.add("Invalid Category ID Provided");
-                return errors;
-            }
-
-            if (productRepository.existsByNameAndCategoryId(productDto.getName(), categoryId))
-                errors.add("Product Already Exists With Given name and Category ID");
+        if (!categoryRepository.existsById(productDto.getCategoryId())) {
+            errors.add("Invalid Category ID Provided");
+            return errors;
         }
+
+        if (productRepository.existsByNameAndCategoryId(productDto.getName(), productDto.getCategoryId()))
+            errors.add("Product Already Exists With Given name and Category ID");
+
         return errors;
     }
 }

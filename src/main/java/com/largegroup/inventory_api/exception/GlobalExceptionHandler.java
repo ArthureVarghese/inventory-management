@@ -4,11 +4,13 @@ import com.largegroup.inventory_api.view.ErrorResponse;
 import com.largegroup.inventory_api.view.GenericResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
@@ -66,5 +68,12 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public GenericResponse handleOrderCreationError(OrderCreationError ex) {
         return new GenericResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler (HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus (HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GenericResponse handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
+        return new GenericResponse("Unsupported Media Type Provided");
     }
 }
