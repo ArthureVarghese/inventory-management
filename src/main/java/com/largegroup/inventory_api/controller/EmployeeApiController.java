@@ -87,8 +87,8 @@ public class EmployeeApiController {
     @PutMapping (path = "/order", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
-    public OrderDto createOrder(@RequestParam (name = "product-id") Integer productId,
-                                @RequestParam (name = "user-id") Integer userId,
+    public OrderDto createOrder(@RequestParam (name = "user-id") Integer userId,
+                                @RequestParam (name = "product-id") Integer productId,
                                 @RequestParam (name = "quantity") Integer quantity) {
         return employeeApiService.createOrder(productId, userId, quantity);
     }
