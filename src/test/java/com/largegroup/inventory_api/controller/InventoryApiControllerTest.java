@@ -50,7 +50,7 @@ public class InventoryApiControllerTest {
     void testGetProduct_WithNoParams() throws Exception {
         Product product = new Product();
         ProductList productList = new ProductList(Collections.singletonList(product));
-        when(inventoryApiService.getProductFromInventory(any(), any(), anyInt())).thenReturn(productList);
+        when(inventoryApiService.getProductFromInventory(any(), any(), anyInt(), any())).thenReturn(productList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/product")
                         .accept(MediaType.APPLICATION_JSON))
@@ -77,12 +77,13 @@ public class InventoryApiControllerTest {
     void testGetProduct_WithAllParams() throws Exception {
         Product product = new Product();
         ProductList productList = new ProductList(Collections.singletonList(product));
-        when(inventoryApiService.getProductFromInventory(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(productList);
+        when(inventoryApiService.getProductFromInventory(any(Integer.class), any(Integer.class), any(Integer.class),any())).thenReturn(productList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/product")
                         .queryParam("product-id", "1")
                         .queryParam("category-id", "1")
                         .queryParam("page", "1")
+                        .queryParam("active","true")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -95,10 +96,11 @@ public class InventoryApiControllerTest {
         Category category = new Category();
         CategoryList categoryList = new CategoryList(Collections.singletonList(category));
 
-        when(inventoryApiService.getCategoryFromInventory(any(Integer.class), any(Integer.class))).thenReturn(categoryList);
+        when(inventoryApiService.getCategoryFromInventory(any(Integer.class), any(Integer.class),any())).thenReturn(categoryList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/category")
                         .queryParam("category-id", "1")
+                        .queryParam("active","true")
                         .queryParam("page", "1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -113,7 +115,7 @@ public class InventoryApiControllerTest {
         Category category = new Category();
         CategoryList categoryList = new CategoryList(Collections.singletonList(category));
 
-        when(inventoryApiService.getCategoryFromInventory(any(), any(Integer.class))).thenReturn(categoryList);
+        when(inventoryApiService.getCategoryFromInventory(any(), any(Integer.class),any())).thenReturn(categoryList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/category")
                         .accept(MediaType.APPLICATION_JSON))

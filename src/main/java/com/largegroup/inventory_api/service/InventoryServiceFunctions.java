@@ -6,13 +6,13 @@ public interface InventoryServiceFunctions {
 
     public GenericResponse addProductToInventory(ProductDto productDto, Integer userId);
 
-    public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page);
+    public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page, Boolean active);
 
     public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId, Boolean active);
 
     public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId);
 
-    public CategoryList getCategoryFromInventory(Integer categoryId, int page);
+    public CategoryList getCategoryFromInventory(Integer categoryId, int page, Boolean active);
 
     public void updateCategoryInInventory(Integer categoryId, String name, Integer userId, Boolean active);
 
