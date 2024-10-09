@@ -8,4 +8,5 @@ import lombok.Data;
 public class CategoryDto {
     Integer id;
     String name;
+    Boolean active;
 }

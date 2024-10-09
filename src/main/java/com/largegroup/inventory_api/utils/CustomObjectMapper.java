@@ -16,7 +16,8 @@ public class CustomObjectMapper {
                 product.getName(),
                 product.getCategoryId(),
                 product.getPrice(),
-                product.getQuantity()
+                product.getQuantity(),
+                product.getActive()
         );
     }
 
@@ -26,19 +27,22 @@ public class CustomObjectMapper {
         product.setCategoryId(productDto.getCategoryId());
         product.setPrice(productDto.getPrice());
         product.setQuantity(productDto.getQuantity());
+        product.setActive(productDto.getActive());
         return product;
     }
 
     public static CategoryDto mapCategoryToDto(Category category) {
         return new CategoryDto(
                 category.getId(),
-                category.getName()
+                category.getName(),
+                category.getActive()
         );
     }
 
     public static Category mapDtoToCategory(CategoryDto categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());
+        category.setActive(categoryDto.getActive());
         return category;
     }
 
