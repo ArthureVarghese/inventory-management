@@ -11,4 +11,5 @@ public class ProductDto {
     Integer categoryId;
     Double price;
     Integer quantity;
+    Boolean active;
 }
