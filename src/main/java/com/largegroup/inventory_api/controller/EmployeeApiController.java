@@ -41,8 +41,9 @@ public class EmployeeApiController {
             @RequestParam (name = "category-id", required = false) Integer categoryId,
             @RequestParam (name = "price", required = false) Double price,
             @RequestParam (name = "quantity", required = false) Integer quantity,
+            @RequestParam (name = "active" , required = false) Boolean active,
             @RequestParam (name = "user-id", required = true) Integer userId) {
-        employeeApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId);
+        employeeApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId, active);
     }
 
     @DeleteMapping (path = "/product", produces = "application/json")

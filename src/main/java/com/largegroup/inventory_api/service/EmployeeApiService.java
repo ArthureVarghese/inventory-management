@@ -84,9 +84,9 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     @Override
     @CacheDelete
     @Transactional
-    public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId) {
+    public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId, Boolean active) {
 
-        if (productName == null && categoryId == null && price == null && quantity == null)
+        if (productName == null && categoryId == null && price == null && quantity == null && active == null)
             throw new ValidationError(List.of("No parameters provided"));
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
@@ -136,6 +136,14 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
                 throw new ValidationError(List.of("Quantity should be greater than 0"));
 
             product.setQuantity(quantity);
+        }
+
+        if (active != null) {
+
+            if (active.equals(product.getActive()))
+                throw new ValidationError(List.of("Can't change to the same active value"));
+
+            product.setActive(active);
         }
 
         productRepository.save(product);
