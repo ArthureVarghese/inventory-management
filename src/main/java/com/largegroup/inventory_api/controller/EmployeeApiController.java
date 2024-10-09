@@ -46,12 +46,6 @@ public class EmployeeApiController {
         employeeApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId, active);
     }
 
-    @DeleteMapping (path = "/product", produces = "application/json")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteProduct(@RequestParam (name = "user-id") Integer userId, @RequestParam (name = "product-id") Integer productId) {
-        employeeApiService.deleteProductFromInventory(productId, userId);
-
-    }
 
     @PostMapping (path = "/category", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
@@ -77,13 +71,6 @@ public class EmployeeApiController {
             @RequestParam (name = "user-id", required = true) Integer userId,
             @RequestParam (name = "active", required = false) Boolean active) {
         employeeApiService.updateCategoryInInventory(categoryId, name, userId, active);
-    }
-
-    @DeleteMapping (path = "/category", produces = "application/json")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCategory(@RequestParam (name = "user-id") Integer userId, @RequestParam (name = "category-id") Integer categoryId) {
-
-        employeeApiService.deleteCategoryFromInventory(categoryId, userId);
     }
 
     @PutMapping (path = "/order", produces = "application/json")
