@@ -143,7 +143,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         if (active != null) {
 
             if (active.equals(product.getActive()))
-                throw new ValidationError(List.of("Can't change to the same active value"));
+                throw new ValidationError(List.of("Can't change to the same active status"));
 
             if(active.equals(Boolean.TRUE)){
                 if(!categoryRepository.existsByIdAndActiveIsTrue(product.getCategoryId()))
