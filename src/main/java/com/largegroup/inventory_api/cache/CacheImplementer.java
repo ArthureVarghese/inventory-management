@@ -45,7 +45,6 @@ public class CacheImplementer {
 
     @Around ("@annotation(com.largegroup.inventory_api.cache.annotation.CacheDelete)")
     public Object deleteCache(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("\n\n\n\nDeleting Cache\n\n\n\n");
         cache.clear();
         return joinPoint.proceed();
     }
