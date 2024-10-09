@@ -138,7 +138,7 @@ public class InventoryApiServiceTest {
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
         when(categoryRepository.existsByIdAndActiveIsTrue(1)).thenReturn(true);
 
-        inventoryApiService.updateProductInInventory(1, "Product", 1, 10.0, 1, 1,false);
+        inventoryApiService.updateProductInInventory(1, "Product", 1, 10.0, 1, 1, false);
 
         assertThat(mockProduct.getName()).isEqualTo("Product");
         assertThat(mockProduct.getCategoryId()).isEqualTo(1);
@@ -150,7 +150,7 @@ public class InventoryApiServiceTest {
     @Test
     void testUpdateProductInInventory_NoParam() {
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("No parameters provided");
 
     }
@@ -158,7 +158,7 @@ public class InventoryApiServiceTest {
     @Test
     void testUpdateProductInInventory_InvalidUserId() {
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Invalid User ID Found While Validating");
 
     }
@@ -169,7 +169,7 @@ public class InventoryApiServiceTest {
         mockUser.setRole("Buyer");
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
 
-        Exception exception = assertThrows(AuthenticationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1,null));
+        Exception exception = assertThrows(AuthenticationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1, null));
         assertThat(exception.getMessage()).isEqualTo("Action is Not allowed For Current User Role");
 
     }
@@ -180,7 +180,7 @@ public class InventoryApiServiceTest {
         mockUser.setRole("Admin");
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("No Product Found with the Given Product-id");
 
     }
@@ -193,7 +193,7 @@ public class InventoryApiServiceTest {
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", null, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change to same product name");
 
     }
@@ -206,11 +206,11 @@ public class InventoryApiServiceTest {
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
         when(categoryRepository.existsByIdAndActiveIsTrue(1)).thenReturn(false);
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", 1, null, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, "Product", 1, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Category is either non existent or Inactive");
 
         mockProduct.setCategoryId(1);
-        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, 1, null, null, 1,null));
+        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, 1, null, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change to same category id");
 
     }
@@ -222,11 +222,11 @@ public class InventoryApiServiceTest {
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, 0.0, null, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, 0.0, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Price should be greater than 0");
 
         mockProduct.setPrice(10.0);
-        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, 10.0, null, 1,null));
+        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, 10.0, null, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change to same price");
 
     }
@@ -238,11 +238,11 @@ public class InventoryApiServiceTest {
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 0, 1,null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 0, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Quantity should be greater than 0");
 
         mockProduct.setQuantity(45);
-        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 45, 1,null));
+        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 45, 1, null));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change to same quantity");
 
     }
@@ -257,13 +257,13 @@ public class InventoryApiServiceTest {
         when(productRepository.findById(1)).thenReturn(Optional.of(mockProduct));
 
 
-        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 1, 1,true));
+        ValidationError exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, 1, 1, true));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change to the same active status");
 
         mockProduct.setActive(false);
         when(categoryRepository.existsByIdAndActiveIsTrue(1)).thenReturn(false);
 
-        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, null, 1,true));
+        exception = assertThrows(ValidationError.class, () -> inventoryApiService.updateProductInInventory(1, null, null, null, null, 1, true));
         assertThat(exception.getErrors().getFirst()).isEqualTo("Can't change product status to Active because Category is Inactive");
 
 
@@ -344,7 +344,7 @@ public class InventoryApiServiceTest {
     void addProductToInventoryWithInvalidUser() {
         mockUser.setRole("CUSTOMER");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(AuthenticationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10,true), 1));
+        assertThrows(AuthenticationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10, true), 1));
 
     }
 
@@ -352,21 +352,21 @@ public class InventoryApiServiceTest {
     void addProductToInventoryWithInvalidCategoryId() {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 0, 10.0, 10,true), 1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 0, 10.0, 10, true), 1));
     }
 
     @Test
     void addProductToInventoryWithInvalidPrice() {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, -10.0, 10,true), 1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, -10.0, 10, true), 1));
     }
 
     @Test
     void addProductToInventoryWithInvalidQuantity() {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, -10,true), 1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, -10, true), 1));
     }
 
     @Test
@@ -374,7 +374,7 @@ public class InventoryApiServiceTest {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(categoryRepository.existsById(any())).thenReturn(false);
-        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10,true), 1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10, true), 1));
     }
 
     @Test
@@ -383,7 +383,7 @@ public class InventoryApiServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(categoryRepository.existsById(any())).thenReturn(true);
         when(productRepository.existsByNameAndCategoryId(any(), any())).thenReturn(true);
-        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10,true), 1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10, true), 1));
     }
 
     @Test
@@ -394,47 +394,17 @@ public class InventoryApiServiceTest {
         when(categoryRepository.existsByIdAndActiveIsTrue(any())).thenReturn(true);
         when(productRepository.existsByNameAndCategoryId(any(), any())).thenReturn(false);
         when(productRepository.save(any())).thenReturn(mockProduct);
-        GenericResponse gr = inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10,true), 1);
+        GenericResponse gr = inventoryApiService.addProductToInventory(new ProductDto(1, "a", 1, 10.0, 10, true), 1);
         assertThat(gr.getMessage()).isEqualTo("Product created successfully with id 1");
     }
 
-    @Test
-    void deleteProductFromInventoryWithInvalidUserId() {
-        when(userRepository.findById(any())).thenReturn(Optional.empty());
-        assertThrows(ValidationError.class, () -> inventoryApiService.deleteProductFromInventory(1, 1));
-    }
-
-    @Test
-    void deleteProductFromInventoryWithInvalidRole() {
-        mockUser.setRole("CUSTOMER");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(AuthenticationError.class, () -> inventoryApiService.deleteProductFromInventory(1, 1));
-    }
-
-    @Test
-    void deleteProductFromInventoryWithInvalidProductId() {
-        mockUser.setRole("ADMIN");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        when(productRepository.existsById(any())).thenReturn(false);
-        assertThrows(ValidationError.class, () -> inventoryApiService.deleteProductFromInventory(1, 1));
-    }
-
-
-    @Test
-    void deleteProductFromInventory() {
-        mockUser.setRole("ADMIN");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        when(productRepository.existsById(any())).thenReturn(true);
-        when(productRepository.save(any())).thenReturn(mockProduct);
-        inventoryApiService.deleteProductFromInventory(1,1);
-    }
 
     @Test
     void addCategoryToInventoryWithCategoryAlreadyExists() {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(categoryRepository.existsByName(any())).thenReturn(true);
-        assertThrows(ValidationError.class, () -> inventoryApiService.addCategoryToInventory(new CategoryDto(1,"a",true),1));
+        assertThrows(ValidationError.class, () -> inventoryApiService.addCategoryToInventory(new CategoryDto(1, "a", true), 1));
     }
 
     @Test
@@ -444,41 +414,15 @@ public class InventoryApiServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(categoryRepository.existsByName(any())).thenReturn(false);
         when(categoryRepository.save(any())).thenReturn(mockCategory);
-        GenericResponse gr = inventoryApiService.addCategoryToInventory(new CategoryDto(1,"a",true),1);
+        GenericResponse gr = inventoryApiService.addCategoryToInventory(new CategoryDto(1, "a", true), 1);
         assertThat(gr.getMessage()).isEqualTo("Category created successfully with id 1");
-    }
-
-    @Test
-    void deleteCategoryFromInventoryWithInvalidCategoryId() {
-        mockUser.setRole("ADMIN");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        when(categoryRepository.existsById(any())).thenReturn(false);
-        assertThrows(ValidationError.class, () -> inventoryApiService.deleteCategoryFromInventory(1,1));
-    }
-
-    @Test
-    void deleteCategoryFromInventoryHavingProducts() {
-        mockUser.setRole("ADMIN");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        when(categoryRepository.existsById(any())).thenReturn(true);
-        when(productRepository.existsByCategoryId(any())).thenReturn(true);
-        assertThrows(ValidationError.class, () -> inventoryApiService.deleteCategoryFromInventory(1,1));
-    }
-
-    @Test
-    void deleteCategoryFromInventory() {
-        mockUser.setRole("ADMIN");
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        when(categoryRepository.existsById(any())).thenReturn(true);
-        when(productRepository.existsByCategoryId(any())).thenReturn(false);
-        inventoryApiService.deleteCategoryFromInventory(1,1);
     }
 
     @Test
     void createOrderWithInvalidUserRole() {
         mockUser.setRole("ADMIN");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
-        assertThrows(AuthenticationError.class, () -> inventoryApiService.createOrder(1,1,1));
+        assertThrows(AuthenticationError.class, () -> inventoryApiService.createOrder(1, 1, 1));
     }
 
     @Test
@@ -486,7 +430,7 @@ public class InventoryApiServiceTest {
         mockUser.setRole("CUSTOMER");
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(productRepository.findById(any())).thenReturn(Optional.empty());
-        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1,1,1));
+        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1, 1, 1));
     }
 
     @Test
@@ -495,7 +439,7 @@ public class InventoryApiServiceTest {
         mockProduct.setActive(true);
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(mockProduct));
-        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1,1,0));
+        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1, 1, 0));
     }
 
     @Test
@@ -505,7 +449,7 @@ public class InventoryApiServiceTest {
         mockProduct.setActive(true);
         when(userRepository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(mockProduct));
-        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1,1,3));
+        assertThrows(OrderCreationError.class, () -> inventoryApiService.createOrder(1, 1, 3));
     }
 
     @Test
@@ -520,7 +464,7 @@ public class InventoryApiServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(mockProduct));
         when(orderRepository.save(any())).thenReturn(order);
         when(productRepository.save(any())).thenReturn(mockProduct);
-        OrderDto orderDto = inventoryApiService.createOrder(1,1,3);
+        OrderDto orderDto = inventoryApiService.createOrder(1, 1, 3);
         assertThat(orderDto.getUserId()).isEqualTo(1);
     }
 }

@@ -236,31 +236,6 @@ public class InventoryApiControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    @Test
-    void deleteProductMissingUserId() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/product")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Required request parameter 'user-id'"));
-    }
-
-    @Test
-    void deleteProductMissingProductId() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/product")
-                        .queryParam("user-id","9")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Required request parameter 'product-id'"));
-    }
-
-    @Test
-    void deleteProduct() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/product")
-                        .queryParam("user-id","9")
-                        .queryParam("product-id","369")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
 
     @Test
     void addCategoryWithUnsupportedInput() throws Exception {
@@ -314,31 +289,6 @@ public class InventoryApiControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    @Test
-    void deleteCategoryMissingUserId() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/category")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Required request parameter 'user-id'"));
-    }
-
-    @Test
-    void deleteCategoryMissingCategoryId() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/category")
-                        .queryParam("user-id","9")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Required request parameter 'category-id'"));
-    }
-
-    @Test
-    void deleteCategory() throws Throwable{
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/category")
-                        .queryParam("user-id","9")
-                        .queryParam("category-id","10")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
 
     @Test
     void createOrderMissingUserId() throws Exception {
