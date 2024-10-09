@@ -186,7 +186,11 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
     @Override
     @CacheDelete
-    public void updateCategoryInInventory(Integer categoryId, String name, Integer userId) {
+    public void updateCategoryInInventory(Integer categoryId, String name, Integer userId, Boolean active) {
+
+        if(name == null && active == null)
+            throw new ValidationError(List.of("No parameters provided"));
+
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
@@ -194,13 +198,18 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ValidationError(List.of("No category found with the given id")));
 
-        if (category.getName().equalsIgnoreCase(name))
-            throw new ValidationError(List.of("Can't change to the Same Category name"));
+        if(name != null){
+            if (category.getName().equalsIgnoreCase(name))
+                throw new ValidationError(List.of("Can't change to the Same Category name"));
+            if (categoryRepository.existsByName(name))
+                throw new ValidationError(List.of("Category with the same name already exists"));
+            category.setName(name);
+        }
 
-        if (categoryRepository.existsByName(name))
-            throw new ValidationError(List.of("Category with the same name already exists"));
+        if(active != null){
+            category.setActive(active);
+        }
 
-        category.setName(name);
         categoryRepository.save(category);
 
     }
