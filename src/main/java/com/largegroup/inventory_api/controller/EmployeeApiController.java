@@ -72,9 +72,10 @@ public class EmployeeApiController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateCategory(
             @RequestParam (name = "category-id", required = true) Integer categoryId,
-            @RequestParam (name = "name", required = true) String name,
-            @RequestParam (name = "user-id", required = true) Integer userId) {
-        employeeApiService.updateCategoryInInventory(categoryId, name, userId);
+            @RequestParam (name = "name", required = false) String name,
+            @RequestParam (name = "user-id", required = true) Integer userId,
+            @RequestParam (name = "active", required = false) Boolean active) {
+        employeeApiService.updateCategoryInInventory(categoryId, name, userId, active);
     }
 
     @DeleteMapping (path = "/category", produces = "application/json")

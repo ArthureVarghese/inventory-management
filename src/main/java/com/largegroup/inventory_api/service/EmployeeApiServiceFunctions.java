@@ -16,7 +16,7 @@ public interface EmployeeApiServiceFunctions {
 
     public CategoryList getCategoryFromInventory(Integer categoryId, int page);
 
-    public void updateCategoryInInventory(Integer categoryId, String name, Integer userId);
+    public void updateCategoryInInventory(Integer categoryId, String name, Integer userId, Boolean active);
 
     public void deleteCategoryFromInventory(Integer categoryId, Integer userId);
 
