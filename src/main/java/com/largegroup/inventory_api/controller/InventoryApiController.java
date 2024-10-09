@@ -29,8 +29,9 @@ public class InventoryApiController {
     public ProductList getProduct(
             @RequestParam (name = "product-id", required = false) Integer productId,
             @RequestParam (name = "category-id", required = false) Integer categoryId,
+            @RequestParam (name = "active" , required = false, defaultValue = "true") Boolean active,
             @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
-        return inventoryApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page));
+        return inventoryApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page),active);
     }
 
     @PutMapping (path = "/product", produces = "application/json")
@@ -59,8 +60,9 @@ public class InventoryApiController {
     @ResponseBody
     public CategoryList getCategory(
             @RequestParam (name = "category-id", required = false) Integer categoryId,
+            @RequestParam (name = "active" , required = false, defaultValue = "true") Boolean active,
             @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
-        return inventoryApiService.getCategoryFromInventory(categoryId, parseAndValidatePageNumber(page));
+        return inventoryApiService.getCategoryFromInventory(categoryId, parseAndValidatePageNumber(page),active);
     }
 
     @PutMapping (path = "/category", produces = "application/json")

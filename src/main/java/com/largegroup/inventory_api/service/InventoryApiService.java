@@ -61,25 +61,24 @@ public class InventoryApiService implements InventoryServiceFunctions {
 
     @Override
     @Cached
-    public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page) {
+    public ProductList getProductFromInventory(Integer productId, Integer categoryId, int page, Boolean active) {
 
         int PAGE_SIZE = 25;
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         List<Product> products;
 
         if (productId != null && categoryId != null) {
-            products = productRepository.findByIdAndCategoryId(productId, categoryId, pageRequest);
+            products = productRepository.findByIdAndCategoryIdAndActive(productId, categoryId, active, pageRequest);
             return new ProductList(products);
         } else if (productId != null) {
-            products = productRepository.findById(productId, pageRequest);
+            products = productRepository.findByIdAndActive(productId, active, pageRequest);
             return new ProductList(products);
         } else if (categoryId != null) {
-            products = productRepository.findByCategoryId(categoryId, pageRequest);
+            products = productRepository.findByCategoryIdAndActive(categoryId,active, pageRequest);
             return new ProductList(products);
         }
-
-        Page<Product> product = productRepository.findAll(pageRequest);
-        return new ProductList(product.getContent());
+        products = productRepository.findByActive(active,pageRequest);
+        return new ProductList(products);
 
     }
 
@@ -175,15 +174,15 @@ public class InventoryApiService implements InventoryServiceFunctions {
 
     @Override
     @Cached
-    public CategoryList getCategoryFromInventory(Integer categoryId, int page) {
+    public CategoryList getCategoryFromInventory(Integer categoryId, int page, Boolean active) {
         Pageable pageRequest = PageRequest.of(page, 25);
 
         if (categoryId == null) {
-            Page<Category> categories = categoryRepository.findAll(pageRequest);
+            Page<Category> categories = categoryRepository.findByActive(active,pageRequest);
             return new CategoryList(categories.getContent());
         }
 
-        List<Category> categories = categoryRepository.findById(categoryId, pageRequest);
+        List<Category> categories = categoryRepository.findByIdAndActive(categoryId, active, pageRequest);
         return new CategoryList(categories);
     }
 

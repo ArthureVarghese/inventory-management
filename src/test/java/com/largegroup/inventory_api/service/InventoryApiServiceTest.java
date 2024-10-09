@@ -57,9 +57,9 @@ public class InventoryApiServiceTest {
     void testGetProductFromInventory_WithAllParams() {
 
         List<Product> products = Collections.singletonList(mockProduct);
-        when(productRepository.findByIdAndCategoryId(1, 1, PageRequest.of(1, 25))).thenReturn(products);
+        when(productRepository.findByIdAndCategoryIdAndActive(1, 1, true, PageRequest.of(1, 25))).thenReturn(products);
 
-        ProductList response = inventoryApiService.getProductFromInventory(1, 1, 1);
+        ProductList response = inventoryApiService.getProductFromInventory(1, 1, 1,true);
 
         assertThat(response).isNotNull();
         assertThat(response.getProducts().size()).isEqualTo(1);
@@ -70,9 +70,9 @@ public class InventoryApiServiceTest {
     void testGetProductFromInventory_WithNoParams() {
 
         List<Product> products = Collections.singletonList(mockProduct);
-        when(productRepository.findAll(PageRequest.of(0, 25))).thenReturn(new PageImpl<>(products));
+        when(productRepository.findByActive(true,PageRequest.of(0, 25))).thenReturn(products);
 
-        ProductList response = inventoryApiService.getProductFromInventory(null, null, 0);
+        ProductList response = inventoryApiService.getProductFromInventory(null, null, 0,true);
 
         assertThat(response).isNotNull();
         assertThat(response.getProducts().size()).isEqualTo(1);
@@ -83,9 +83,9 @@ public class InventoryApiServiceTest {
     void testGetProductFromInventory_WithOnlyCategoryId() {
 
         List<Product> products = Collections.singletonList(mockProduct);
-        when(productRepository.findByCategoryId(1, PageRequest.of(0, 25))).thenReturn(products);
+        when(productRepository.findByCategoryIdAndActive(1,true, PageRequest.of(0, 25))).thenReturn(products);
 
-        ProductList response = inventoryApiService.getProductFromInventory(null, 1, 0);
+        ProductList response = inventoryApiService.getProductFromInventory(null, 1, 0,true);
 
         assertThat(response).isNotNull();
         assertThat(response.getProducts().size()).isEqualTo(1);
@@ -96,9 +96,9 @@ public class InventoryApiServiceTest {
     void testGetProductFromInventory_WithOnlyProductId() {
 
         List<Product> products = Collections.singletonList(mockProduct);
-        when(productRepository.findById(1, PageRequest.of(0, 25))).thenReturn(products);
+        when(productRepository.findByIdAndActive(1, true, PageRequest.of(0, 25))).thenReturn(products);
 
-        ProductList response = inventoryApiService.getProductFromInventory(1, null, 0);
+        ProductList response = inventoryApiService.getProductFromInventory(1, null, 0, true);
 
         assertThat(response).isNotNull();
         assertThat(response.getProducts().size()).isEqualTo(1);
@@ -108,9 +108,9 @@ public class InventoryApiServiceTest {
     @Test
     void testGetCategoryFromInventory_WithCategoryId() {
 
-        when(categoryRepository.findById(1, PageRequest.of(0, 25))).thenReturn(Collections.singletonList(mockCategory));
+        when(categoryRepository.findByIdAndActive(1, true, PageRequest.of(0, 25))).thenReturn(Collections.singletonList(mockCategory));
 
-        CategoryList response = inventoryApiService.getCategoryFromInventory(1, 0);
+        CategoryList response = inventoryApiService.getCategoryFromInventory(1, 0,true);
 
         assertThat(response).isNotNull();
         assertThat(response.getCategories().size()).isEqualTo(1);
@@ -120,9 +120,9 @@ public class InventoryApiServiceTest {
     @Test
     void testGetCategoryFromInventory_WithNoParam() {
 
-        when(categoryRepository.findAll(PageRequest.of(0, 25))).thenReturn(new PageImpl<>(Collections.singletonList(mockCategory)));
+        when(categoryRepository.findByActive(true,PageRequest.of(0, 25))).thenReturn(new PageImpl<>(Collections.singletonList(mockCategory)));
 
-        CategoryList response = inventoryApiService.getCategoryFromInventory(null, 0);
+        CategoryList response = inventoryApiService.getCategoryFromInventory(null, 0,true);
 
         assertThat(response).isNotNull();
         assertThat(response.getCategories().size()).isEqualTo(1);
