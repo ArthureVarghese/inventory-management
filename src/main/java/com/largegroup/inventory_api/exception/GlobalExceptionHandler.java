@@ -1,7 +1,10 @@
 package com.largegroup.inventory_api.exception;
 
+import com.largegroup.inventory_api.log.LoggerUtil;
 import com.largegroup.inventory_api.view.ErrorResponse;
 import com.largegroup.inventory_api.view.GenericResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -15,6 +18,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler (ValidationError.class)
     @ResponseStatus (HttpStatus.BAD_REQUEST)
@@ -75,5 +80,13 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public GenericResponse handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
         return new GenericResponse("Unsupported Media Type Provided");
+    }
+
+    @ExceptionHandler (Exception.class)
+    @ResponseStatus (HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GenericResponse handleAllException(Exception ex) {
+        logger.info(ex.getMessage());
+        return new GenericResponse("Error occurred");
     }
 }
