@@ -52,7 +52,9 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         if (!errors.isEmpty()) {
             throw new ValidationError(errors);
         }
+
         Product product = productRepository.save(CustomObjectMapper.mapDtoToProduct(productDto));
+
         return new GenericResponse("Product created successfully with id " + product.getId());
     }
 
@@ -196,7 +198,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
     @CacheDelete
     public void updateCategoryInInventory(Integer categoryId, String name, Integer userId, Boolean active) {
 
-        if(name == null && active == null)
+        if (name == null && active == null)
             throw new ValidationError(List.of("No parameters provided"));
 
 
@@ -206,7 +208,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ValidationError(List.of("No category found with the given id")));
 
-        if(name != null){
+        if (name != null) {
             if (category.getName().equalsIgnoreCase(name))
                 throw new ValidationError(List.of("Can't change to the Same Category name"));
             if (categoryRepository.existsByName(name))
@@ -214,7 +216,7 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             category.setName(name);
         }
 
-        if(active != null){
+        if (active != null) {
             category.setActive(active);
         }
 
@@ -290,16 +292,33 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
         List<String> errors = new ArrayList<>();
 
-        if (productDto.getCategoryId() < 1)
-            errors.add("Category ID should be greater than 0");
+        if (productDto.getCategoryId() != null) {
+            if (productDto.getCategoryId() < 1)
+                errors.add("Category ID should be greater than 0");
+        } else {
+            errors.add("No Category ID provided");
+        }
 
 
-        if (productDto.getPrice() <= 0)
-            errors.add("Price should be greater than 0");
+        if (productDto.getPrice() != null) {
+            if (productDto.getPrice() <= 0)
+                errors.add("Price should be greater than 0");
+        }
+        else {
+            errors.add("No Price Provided");
+        }
 
-        if (productDto.getQuantity() < 0)
-            errors.add("Quantity should be greater than 0");
+        if (productDto.getQuantity() != null) {
+            if (productDto.getQuantity() < 0)
+                errors.add("Quantity should be greater than 0");
+        }
+        else {
+            errors.add("No Quantity Provided");
+        }
 
+        if (productDto.getActive() == null) {
+            errors.add("value for active is not Provided");
+        }
 
         if (!errors.isEmpty())
             return errors;
