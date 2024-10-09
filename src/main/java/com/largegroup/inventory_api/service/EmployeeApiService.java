@@ -145,6 +145,11 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             if (active.equals(product.getActive()))
                 throw new ValidationError(List.of("Can't change to the same active value"));
 
+            if(active.equals(Boolean.TRUE)){
+                if(!categoryRepository.existsByIdAndActiveIsTrue(product.getCategoryId()))
+                    throw new ValidationError(List.of("Can't change product status to Active because Category is Inactive"));
+            }
+
             product.setActive(active);
         }
 
@@ -217,6 +222,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         }
 
         if (active != null) {
+            if (productRepository.existsByCategoryIdAndActiveIsTrue(categoryId))
+                throw new ValidationError(List.of("Cannot Change Active status. There are Active products in this Category"));
             category.setActive(active);
         }
 

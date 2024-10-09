@@ -19,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     boolean existsByNameAndCategoryId(String name, Integer categoryId);
 
     boolean existsByCategoryId(Integer categoryId);
+
+    boolean existsByCategoryIdAndActiveIsTrue(Integer categoryId);
 }
