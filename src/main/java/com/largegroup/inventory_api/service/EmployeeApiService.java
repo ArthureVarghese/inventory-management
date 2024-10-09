@@ -247,8 +247,12 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         validateUser(userId, DEFAULT_ACCESS_ROLE);
 
         Product product = productRepository.findById(productId).orElse(null);
+
         if (product == null)
             throw new OrderCreationError("No Product Found With Given ID");
+
+        if (product.getActive().equals(Boolean.FALSE))
+            throw new OrderCreationError("Inactive Product Provided");
 
         if (quantity < 1)
             throw new OrderCreationError("Quantity Should be greater than 0");
