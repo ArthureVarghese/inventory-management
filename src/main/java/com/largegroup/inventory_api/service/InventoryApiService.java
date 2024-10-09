@@ -27,7 +27,7 @@ import java.util.List;
 
 
 @Service
-public class EmployeeApiService implements EmployeeApiServiceFunctions {
+public class InventoryApiService implements InventoryServiceFunctions {
 
     @Autowired
     ProductRepository productRepository;
@@ -183,8 +183,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             return new CategoryList(categories.getContent());
         }
 
-        List<Category> employees = categoryRepository.findById(categoryId, pageRequest);
-        return new CategoryList(employees);
+        List<Category> categories = categoryRepository.findById(categoryId, pageRequest);
+        return new CategoryList(categories);
     }
 
     @Override

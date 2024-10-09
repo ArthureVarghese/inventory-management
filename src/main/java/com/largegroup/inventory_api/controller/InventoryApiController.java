@@ -1,7 +1,7 @@
 package com.largegroup.inventory_api.controller;
 
 import com.largegroup.inventory_api.exception.PageNumberException;
-import com.largegroup.inventory_api.service.EmployeeApiServiceFunctions;
+import com.largegroup.inventory_api.service.InventoryServiceFunctions;
 import com.largegroup.inventory_api.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping (path = "/api/v1", produces = "application/json")
-public class EmployeeApiController {
+public class InventoryApiController {
 
     @Autowired
-    EmployeeApiServiceFunctions employeeApiService;
+    InventoryServiceFunctions inventoryApiService;
 
     @PostMapping (path = "/product", produces = "application/json")
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
     public GenericResponse addProduct(@RequestBody ProductDto productDto, @RequestParam (name = "user-id") Integer userId) {
-        return employeeApiService.addProductToInventory(productDto, userId);
+        return inventoryApiService.addProductToInventory(productDto, userId);
     }
 
 
@@ -30,7 +30,7 @@ public class EmployeeApiController {
             @RequestParam (name = "product-id", required = false) Integer productId,
             @RequestParam (name = "category-id", required = false) Integer categoryId,
             @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
-        return employeeApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page));
+        return inventoryApiService.getProductFromInventory(productId, categoryId, parseAndValidatePageNumber(page));
     }
 
     @PutMapping (path = "/product", produces = "application/json")
@@ -43,7 +43,7 @@ public class EmployeeApiController {
             @RequestParam (name = "quantity", required = false) Integer quantity,
             @RequestParam (name = "active" , required = false) Boolean active,
             @RequestParam (name = "user-id", required = true) Integer userId) {
-        employeeApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId, active);
+        inventoryApiService.updateProductInInventory(productId, productName, categoryId, price, quantity, userId, active);
     }
 
 
@@ -51,7 +51,7 @@ public class EmployeeApiController {
     @ResponseStatus (HttpStatus.CREATED)
     @ResponseBody
     public GenericResponse addCategory(@RequestBody CategoryDto categoryDto, @RequestParam (name = "user-id") Integer userId) {
-        return employeeApiService.addCategoryToInventory(categoryDto, userId);
+        return inventoryApiService.addCategoryToInventory(categoryDto, userId);
     }
 
     @GetMapping (path = "/category", produces = "application/json")
@@ -60,7 +60,7 @@ public class EmployeeApiController {
     public CategoryList getCategory(
             @RequestParam (name = "category-id", required = false) Integer categoryId,
             @RequestParam (name = "page", required = false, defaultValue = "1") String page) {
-        return employeeApiService.getCategoryFromInventory(categoryId, parseAndValidatePageNumber(page));
+        return inventoryApiService.getCategoryFromInventory(categoryId, parseAndValidatePageNumber(page));
     }
 
     @PutMapping (path = "/category", produces = "application/json")
@@ -70,7 +70,7 @@ public class EmployeeApiController {
             @RequestParam (name = "name", required = false) String name,
             @RequestParam (name = "user-id", required = true) Integer userId,
             @RequestParam (name = "active", required = false) Boolean active) {
-        employeeApiService.updateCategoryInInventory(categoryId, name, userId, active);
+        inventoryApiService.updateCategoryInInventory(categoryId, name, userId, active);
     }
 
     @PutMapping (path = "/order", produces = "application/json")
@@ -79,7 +79,7 @@ public class EmployeeApiController {
     public OrderDto createOrder(@RequestParam (name = "user-id") Integer userId,
                                 @RequestParam (name = "product-id") Integer productId,
                                 @RequestParam (name = "quantity") Integer quantity) {
-        return employeeApiService.createOrder(productId, userId, quantity);
+        return inventoryApiService.createOrder(productId, userId, quantity);
     }
 
     // Throws error if page number is non-numeric or less than 0

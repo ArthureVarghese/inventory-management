@@ -10,7 +10,7 @@ import com.largegroup.inventory_api.exception.GlobalExceptionHandler;
 import com.largegroup.inventory_api.exception.ValidationError;
 import com.largegroup.inventory_api.model.Category;
 import com.largegroup.inventory_api.model.Product;
-import com.largegroup.inventory_api.service.EmployeeApiService;
+import com.largegroup.inventory_api.service.InventoryApiService;
 import com.largegroup.inventory_api.view.CategoryList;
 import com.largegroup.inventory_api.view.GenericResponse;
 import com.largegroup.inventory_api.view.OrderDto;
@@ -33,24 +33,24 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@WebMvcTest (EmployeeApiController.class)
+@WebMvcTest (InventoryApiController.class)
 @ExtendWith (MockitoExtension.class)
 @AutoConfigureMockMvc
 @ImportAutoConfiguration (GlobalExceptionHandler.class)
-public class EmployeeApiControllerTest {
+public class InventoryApiControllerTest {
 
     @Autowired
     MockMvc mvc;
 
     @MockBean
-    EmployeeApiService employeeApiService;
+    InventoryApiService inventoryApiService;
 
 
     @Test
     void testGetProduct_WithNoParams() throws Exception {
         Product product = new Product();
         ProductList productList = new ProductList(Collections.singletonList(product));
-        when(employeeApiService.getProductFromInventory(any(), any(), anyInt())).thenReturn(productList);
+        when(inventoryApiService.getProductFromInventory(any(), any(), anyInt())).thenReturn(productList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/product")
                         .accept(MediaType.APPLICATION_JSON))
@@ -77,7 +77,7 @@ public class EmployeeApiControllerTest {
     void testGetProduct_WithAllParams() throws Exception {
         Product product = new Product();
         ProductList productList = new ProductList(Collections.singletonList(product));
-        when(employeeApiService.getProductFromInventory(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(productList);
+        when(inventoryApiService.getProductFromInventory(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(productList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/product")
                         .queryParam("product-id", "1")
@@ -95,7 +95,7 @@ public class EmployeeApiControllerTest {
         Category category = new Category();
         CategoryList categoryList = new CategoryList(Collections.singletonList(category));
 
-        when(employeeApiService.getCategoryFromInventory(any(Integer.class), any(Integer.class))).thenReturn(categoryList);
+        when(inventoryApiService.getCategoryFromInventory(any(Integer.class), any(Integer.class))).thenReturn(categoryList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/category")
                         .queryParam("category-id", "1")
@@ -113,7 +113,7 @@ public class EmployeeApiControllerTest {
         Category category = new Category();
         CategoryList categoryList = new CategoryList(Collections.singletonList(category));
 
-        when(employeeApiService.getCategoryFromInventory(any(), any(Integer.class))).thenReturn(categoryList);
+        when(inventoryApiService.getCategoryFromInventory(any(), any(Integer.class))).thenReturn(categoryList);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/category")
                         .accept(MediaType.APPLICATION_JSON))
@@ -206,7 +206,7 @@ public class EmployeeApiControllerTest {
 
     @Test
     void addProductWithMissingJsonFields() throws Exception {
-        when(employeeApiService.addProductToInventory(any(), any())).thenThrow(ValidationError.class);
+        when(inventoryApiService.addProductToInventory(any(), any())).thenThrow(ValidationError.class);
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
                         .queryParam("user-id", "10")
                         .accept(MediaType.APPLICATION_JSON)
@@ -222,7 +222,7 @@ public class EmployeeApiControllerTest {
 
     @Test
     void addProduct() throws Exception {
-        when(employeeApiService.addProductToInventory(any(), any())).thenReturn(new GenericResponse(""));
+        when(inventoryApiService.addProductToInventory(any(), any())).thenReturn(new GenericResponse(""));
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
                         .queryParam("user-id", "9")
                         .accept(MediaType.APPLICATION_JSON)
@@ -275,7 +275,7 @@ public class EmployeeApiControllerTest {
 
     @Test
     void addCategoryWithNoUserId() throws Exception {
-        when(employeeApiService.addProductToInventory(any(), any())).thenThrow(ValidationError.class);
+        when(inventoryApiService.addProductToInventory(any(), any())).thenThrow(ValidationError.class);
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/category")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -289,7 +289,7 @@ public class EmployeeApiControllerTest {
 
     @Test
     void addCategoryWithMissingJsonFields() throws Exception {
-        when(employeeApiService.addCategoryToInventory(any(), any())).thenThrow(ValidationError.class);
+        when(inventoryApiService.addCategoryToInventory(any(), any())).thenThrow(ValidationError.class);
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/category")
                         .queryParam("user-id", "10")
                         .accept(MediaType.APPLICATION_JSON)
@@ -302,7 +302,7 @@ public class EmployeeApiControllerTest {
 
     @Test
     void addCategory() throws Throwable{
-        when(employeeApiService.addCategoryToInventory(any(),any())).thenReturn(new GenericResponse(""));
+        when(inventoryApiService.addCategoryToInventory(any(),any())).thenReturn(new GenericResponse(""));
 
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
                         .queryParam("user-id", "10")
@@ -371,7 +371,7 @@ public class EmployeeApiControllerTest {
     void createOrder() throws Exception {
         OrderDto orderDto = new OrderDto();
         orderDto.setInvoiceId(1);
-        when(employeeApiService.createOrder(any(),any(),any())).thenReturn(orderDto);
+        when(inventoryApiService.createOrder(any(),any(),any())).thenReturn(orderDto);
         mvc.perform(MockMvcRequestBuilders.put("/api/v1/order")
                         .queryParam("user-id","9")
                         .queryParam("product-id","9")
