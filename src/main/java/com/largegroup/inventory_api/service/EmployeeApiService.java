@@ -110,8 +110,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             if (categoryId.equals(product.getCategoryId()))
                 throw new ValidationError(List.of("Can't change to same category id"));
 
-            if (!categoryRepository.existsById(categoryId))
-                throw new ValidationError(List.of("No Category Found with the Given Category-id"));
+            if (!categoryRepository.existsByIdAndActiveIsTrue(categoryId))
+                throw new ValidationError(List.of("Category is either non existent or Inactive"));
 
             product.setCategoryId(categoryId);
         }
@@ -323,8 +323,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         if (!errors.isEmpty())
             return errors;
 
-        if (!categoryRepository.existsById(productDto.getCategoryId())) {
-            errors.add("Invalid Category ID Provided");
+        if (!categoryRepository.existsByIdAndActiveIsTrue(productDto.getCategoryId())) {
+            errors.add("Provided Category ID is either non existing or Not active");
             return errors;
         }
 
