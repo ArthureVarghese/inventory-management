@@ -10,15 +10,11 @@ public interface EmployeeApiServiceFunctions {
 
     public void updateProductInInventory(Integer productId, String productName, Integer categoryId, Double price, Integer quantity, Integer userId, Boolean active);
 
-    public void deleteProductFromInventory(Integer productId, Integer userId);
-
     public GenericResponse addCategoryToInventory(CategoryDto categoryDto, Integer userId);
 
     public CategoryList getCategoryFromInventory(Integer categoryId, int page);
 
     public void updateCategoryInInventory(Integer categoryId, String name, Integer userId, Boolean active);
-
-    public void deleteCategoryFromInventory(Integer categoryId, Integer userId);
 
     public OrderDto createOrder(Integer productId, Integer userId, Integer quantity);
 }

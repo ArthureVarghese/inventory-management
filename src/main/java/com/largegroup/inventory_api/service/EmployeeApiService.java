@@ -145,8 +145,8 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
             if (active.equals(product.getActive()))
                 throw new ValidationError(List.of("Can't change to the same active status"));
 
-            if(active.equals(Boolean.TRUE)){
-                if(!categoryRepository.existsByIdAndActiveIsTrue(product.getCategoryId()))
+            if (active.equals(Boolean.TRUE)) {
+                if (!categoryRepository.existsByIdAndActiveIsTrue(product.getCategoryId()))
                     throw new ValidationError(List.of("Can't change product status to Active because Category is Inactive"));
             }
 
@@ -157,18 +157,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
     }
 
-    @Override
-    @CacheDelete
-    public void deleteProductFromInventory(Integer productId, Integer userId) {
-
-        String DEFAULT_ACCESS_ROLE = "ADMIN";
-        validateUser(userId, DEFAULT_ACCESS_ROLE);
-
-        if (!productRepository.existsById(productId))
-            throw new ValidationError(List.of("No Product with such id present"));
-
-        productRepository.deleteById(productId);
-    }
 
     @Override
     @CacheDelete
@@ -231,20 +219,6 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
 
     }
 
-    @Override
-    @CacheDelete
-    public void deleteCategoryFromInventory(Integer categoryId, Integer userId) {
-        String DEFAULT_ACCESS_ROLE = "ADMIN";
-        validateUser(userId, DEFAULT_ACCESS_ROLE);
-
-        if (!categoryRepository.existsById(categoryId))
-            throw new ValidationError(List.of("No Category with such id present"));
-
-        if (productRepository.existsByCategoryId(categoryId))
-            throw new ValidationError(List.of("Cannot Delete! There are products in this Category"));
-
-        categoryRepository.deleteById(categoryId);
-    }
 
     @Override
     @Transactional
@@ -314,16 +288,14 @@ public class EmployeeApiService implements EmployeeApiServiceFunctions {
         if (productDto.getPrice() != null) {
             if (productDto.getPrice() <= 0)
                 errors.add("Price should be greater than 0");
-        }
-        else {
+        } else {
             errors.add("No Price Provided");
         }
 
         if (productDto.getQuantity() != null) {
             if (productDto.getQuantity() < 0)
                 errors.add("Quantity should be greater than 0");
-        }
-        else {
+        } else {
             errors.add("No Quantity Provided");
         }
 
