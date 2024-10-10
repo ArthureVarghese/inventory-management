@@ -163,6 +163,19 @@ public class InventoryApiService implements InventoryServiceFunctions {
 
         String DEFAULT_ACCESS_ROLE = "ADMIN";
         validateUser(userId, DEFAULT_ACCESS_ROLE);
+        List<String> errors= new ArrayList<>();
+
+
+        if(categoryDto.getName()==null){
+            errors.add("Name cannot be null");
+        }
+
+        if(categoryDto.getActive()==null){
+            errors.add("Active status cannot be null");
+        }
+
+        if(!errors.isEmpty())
+            throw new ValidationError(errors);
 
         if (categoryRepository.existsByName(categoryDto.getName()))
             throw new ValidationError(List.of("Category Already Exists"));
